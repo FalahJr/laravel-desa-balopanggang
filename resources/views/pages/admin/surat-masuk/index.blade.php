@@ -68,8 +68,8 @@
                                     <tr>
                                         <th width="10">No.</th>
                                         <th>No Surat</th>
-                                        <th>Tanggal Surat</th>
                                         <th>Nama Surat</th>
+                                        <th>Tanggal Surat</th>
                                         <th width="15%">Aksi</th>
                                     </tr>
                                 </thead>

@@ -18,7 +18,7 @@ class SuratMasukController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $query = Surat::where('tipe_surat', 'masuk')->latest()->get();
+            $query = Surat::where('tipe_surat', 'masuk')->where('status', 'Pending')->latest()->get();
 
             return DataTables::of($query)
                 ->addColumn('action', function ($item) {
