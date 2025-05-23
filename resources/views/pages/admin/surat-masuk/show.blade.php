@@ -5,6 +5,9 @@
 @endsection
 
 @section('container')
+    @php
+        \Carbon\Carbon::setLocale('id');
+    @endphp
     <main>
         <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
             <div class="container-fluid px-4">
@@ -33,15 +36,16 @@
                 <div class="col-lg-7">
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center justify-content-between">
-                            <div>Detail Surat</div>
+                            <div class="d-flex align-items-center justify-content-between w-100">
+                                <div>Detail Surat</div>
+                                <a href="{{ route('surat-masuk.download', $surat->id) }}"
+                                    class="btn btn-sm btn-outline-primary ms-3" target="_blank">
+                                    <i class="fa fa-download mr-3"> </i>&nbsp; Download
+                                </a>
+                            </div>
                             <div class="d-flex gap-2">
                                 @if ($surat->status == 'Pending')
-                                    {{-- <a href="{{ route('surat-masuk.approve', $surat->id) }}" class="btn btn-sm btn-success">
-                                        <i class="fa fa-check" aria-hidden="true"></i> &nbsp; Setujui
-                                    </a>
-                                    <a href="{{ route('surat-masuk.reject', $surat->id) }}" class="btn btn-sm btn-danger">
-                                        <i class="fa fa-times" aria-hidden="true"></i> &nbsp; Tolak
-                                    </a> --}}
+                                    {{-- Tombol approve/reject di masa depan --}}
                                 @else
                                     <span class="btn btn-sm btn-info text-capitalize">
                                         Surat Telah {{ $surat->status }}
@@ -56,7 +60,8 @@
                                     <tr>
                                         <th>Jenis Surat</th>
                                         <td class="text-capitalize">
-                                            {{ $surat->jenisSurat->nama ? $surat->jenisSurat->nama : '-' }}</td>
+                                            {{ $surat->jenisSurat->nama ? $surat->jenisSurat->nama : '-' }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Nomor Surat</th>
@@ -64,7 +69,8 @@
                                     </tr>
                                     <tr>
                                         <th>Tanggal Surat</th>
-                                        <td>{{ \Carbon\Carbon::parse($surat->tanggal_surat)->format('d-m-Y') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($surat->tanggal_surat)->translatedFormat('d F Y') }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Nama Surat</th>
@@ -79,7 +85,27 @@
                                     @foreach ($surat->fieldValues as $value)
                                         <tr>
                                             <th>{{ $value->fieldDefinition->label }}</th>
-                                            <td>{{ $value->value }}</td>
+                                            <td>
+                                                @php
+                                                    try {
+                                                        $parsedDate = \Carbon\Carbon::createFromFormat(
+                                                            'Y-m-d',
+                                                            $value->value,
+                                                        );
+                                                        $isDate =
+                                                            $parsedDate &&
+                                                            $parsedDate->format('Y-m-d') === $value->value;
+                                                    } catch (\Exception $e) {
+                                                        $isDate = false;
+                                                    }
+                                                @endphp
+
+                                                @if ($isDate)
+                                                    {{ $parsedDate->translatedFormat('d F Y') }}
+                                                @else
+                                                    {{ $value->value }}
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
 
@@ -93,12 +119,6 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             Lampiran Surat
-                            @if ($surat->file_lampiran)
-                                <a href="{{ asset('storage/' . $surat->file_lampiran) }}"
-                                    class="btn btn-sm btn-primary float-end" download>
-                                    <i class="fa fa-download" aria-hidden="true"></i> &nbsp; Download Surat
-                                </a>
-                            @endif
                         </div>
                         <div class="card-body">
                             @if ($surat->file_lampiran)
@@ -119,7 +139,6 @@
                                 <p>Tidak ada file lampiran.</p>
                             @endif
                         </div>
-
                     </div>
                 </div>
             </div>

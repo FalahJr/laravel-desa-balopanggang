@@ -309,6 +309,26 @@ class SuratMasukController extends Controller
 
         return view('pages.admin.surat-masuk.show', compact('surat', 'fieldDefinitions', 'fieldValues'));
     }
+
+    public function download($id)
+    {
+        $surat = Surat::with(['jenisSurat', 'fieldValues.fieldDefinition'])->findOrFail($id);
+
+        // Mapping field dinamis dengan label-nya
+        $fields = $surat->fieldValues->map(function ($fv) {
+            return [
+                'label' => $fv->fieldDefinition->label,
+                'value' => $fv->value,
+            ];
+        });
+
+        // URL file lampiran jika ada
+        $lampiranUrl = $surat->file_lampiran
+            ? url('public/storage/' . $surat->file_lampiran)
+            : null;
+
+        return view('pages.admin.surat-masuk.download', compact('surat', 'fields', 'lampiranUrl'));
+    }
 }
 
 // SuratKeluarController identik, hanya ganti semua 'masuk' menjadi 'keluar' dan view-nya ke 'surat-keluar'

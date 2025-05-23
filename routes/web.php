@@ -59,7 +59,7 @@ Route::prefix('admin')
             Route::put('/{id}', [SuratMasukController::class, 'update'])->name('update');
             Route::delete('/{id}', [SuratMasukController::class, 'destroy'])->name('destroy');
             Route::get('/{id}', [SuratMasukController::class, 'show'])->name('show'); // <- Tambahkan ini
-
+            Route::get('/{id}/download', [SuratMasukController::class, 'download'])->name('download');
         });
 
         // Surat Keluar
