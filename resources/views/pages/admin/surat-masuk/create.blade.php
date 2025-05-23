@@ -68,7 +68,7 @@
 
                                 <div class="mb-3">
                                     <label for="file_lampiran" class="small mb-1">File Lampiran</label>
-                                    <input type="file" name="file_lampiran" id="file_lampiran"
+                                    <input type="file" name="file_lampiran" id="file_lampiran" required
                                         class="form-control @error('file_lampiran') is-invalid @enderror">
                                     @error('file_lampiran')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -126,6 +126,9 @@
 
                         data.forEach(field => {
                             const isRequired = field.is_required === 'Y' ? 'required' : '';
+                            const requiredAsterisk = field.is_required === 'Y' ?
+                                ' <span class="text-danger">*</span>' : '';
+
                             let inputHtml = '';
 
                             switch (field.tipe_input) {
@@ -148,7 +151,7 @@
                             }
 
                             const html = `<div class="mb-3">
-                            <label class="small mb-1" for="field_${field.id}">${field.label}</label>
+                            <label class="small mb-1" for="field_${field.id}">${field.label}${requiredAsterisk}</label>
                             ${inputHtml}
                         </div>`;
 
@@ -178,4 +181,5 @@
             }
         });
     </script>
+
 @endsection

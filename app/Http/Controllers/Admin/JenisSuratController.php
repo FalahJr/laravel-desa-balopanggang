@@ -102,14 +102,14 @@ class JenisSuratController extends Controller
 
         $validatedData = $request->validate([
             'nama' => 'required|string|max:255|unique:jenis_surat,nama,' . $item->id,
+            // Jika ingin, bisa tambahkan validasi untuk fields di sini
         ]);
 
         // Update nama JenisSurat
         $item->update($validatedData);
 
-        // Tangkap array field yang dihapus dari frontend
+        // Tangkap array field yang dihapus dari frontend (via modal hapus)
         $fieldsToDelete = $request->input('fields_to_delete', []);
-
         if (!empty($fieldsToDelete)) {
             foreach ($fieldsToDelete as $fieldId) {
                 // Hapus FieldValue yang terkait
@@ -122,14 +122,14 @@ class JenisSuratController extends Controller
         if ($request->has('add_fields')) {
             $fields = $request->input('fields', []);
 
-            $existingFieldIds = collect($item->fieldDefinitions)->pluck('id')->toArray();
+            $existingFieldIds = $item->fieldDefinitions->pluck('id')->toArray();
             $incomingIds = [];
 
             foreach ($fields as $fieldData) {
                 $label = $fieldData['label'] ?? null;
                 $type = $fieldData['type'] ?? 'text';
                 $required = ($fieldData['required'] ?? 'N') === 'Y' ? 'Y' : 'N';
-                $isActive = ($fieldData['active'] ?? '1') === '1' ? 'Y' : 'N';
+                $isActive = ($fieldData['active'] ?? 'N') === 'Y' ? 'Y' : 'N';
 
                 if (!empty($fieldData['id'])) {
                     // Update field lama
@@ -156,7 +156,7 @@ class JenisSuratController extends Controller
                 }
             }
 
-            // Hapus field lama yang tidak ada di incomingIds dan tidak ada nilai
+            // Hapus field lama yang tidak ada di input baru dan tidak punya nilai
             $fieldsToDelete2 = array_diff($existingFieldIds, $incomingIds);
 
             if (!empty($fieldsToDelete2)) {
@@ -169,7 +169,8 @@ class JenisSuratController extends Controller
                 }
             }
         } else {
-            // Jika tidak pakai field dinamis, hapus semua field yang tidak ada nilai
+            // Jika checkbox add_fields tidak dicentang,
+            // hapus semua field yang tidak memiliki data isian
             foreach ($item->fieldDefinitions as $definition) {
                 $hasValue = \App\Models\FieldValue::where('field_definition_id', $definition->id)->exists();
                 if (!$hasValue) {
@@ -182,6 +183,7 @@ class JenisSuratController extends Controller
             ->route('jenis-surat.index')
             ->with('success', 'Sukses! Jenis Surat berhasil diperbarui.');
     }
+
 
 
 

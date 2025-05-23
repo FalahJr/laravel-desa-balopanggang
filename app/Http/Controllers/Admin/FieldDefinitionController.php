@@ -11,7 +11,7 @@ class FieldDefinitionController extends Controller
     {
         $fields = FieldDefinition::where('jenis_surat_id', $jenisSuratId)
             ->where('is_active', 'Y')
-            ->get(['id', 'label', 'tipe_input']); // ambil hanya field yang dibutuhkan
+            ->get(['id', 'label', 'tipe_input', 'is_required']); // ambil hanya field yang dibutuhkan
 
         return response()->json($fields);
     }

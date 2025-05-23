@@ -65,6 +65,8 @@ class SuratMasukController extends Controller
             $selectedJenisSurat = null;
         }
 
+        // dd($fieldDefinitions);
+
         return view('pages.admin.surat-masuk.create', [
             'jenisSuratList' => $jenisSuratList,
             'selectedJenisSuratId' => $selectedJenisSuratId,

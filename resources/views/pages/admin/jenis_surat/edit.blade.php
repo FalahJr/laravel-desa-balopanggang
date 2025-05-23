@@ -113,22 +113,20 @@
                                                     <input class="form-check-input" type="checkbox"
                                                         name="fields[{{ $index }}][required]"
                                                         id="required_{{ $index }}" value="Y"
-                                                        {{ ($field['is_required'] ?? $field['required']) === 'Y' ? 'checked' : '' }}>
+                                                        {{ ($field['is_required'] ?? ($field['required'] ?? 'N')) === 'Y' ? 'checked' : '' }}>
                                                     <label class="form-check-label"
-                                                        for="required_{{ $index }}">Wajib
-                                                        Diisi</label>
+                                                        for="required_{{ $index }}">Wajib Diisi</label>
                                                 </div>
 
                                                 <div class="mb-2 form-check">
                                                     <input type="hidden" name="fields[{{ $index }}][active]"
-                                                        value="0">
+                                                        value="N">
                                                     <input class="form-check-input" type="checkbox"
                                                         name="fields[{{ $index }}][active]"
-                                                        id="active_{{ $index }}" value="1"
-                                                        {{ $field['is_active'] ?? ($field['active'] ?? true) ? 'checked' : '' }}>
+                                                        id="active_{{ $index }}" value="Y"
+                                                        {{ ($field['is_active'] ?? ($field['active'] ?? 'N')) === 'Y' ? 'checked' : '' }}>
                                                     <label class="form-check-label"
-                                                        for="active_{{ $index }}">Aktifkan Field
-                                                        Ini</label>
+                                                        for="active_{{ $index }}">Aktifkan Field Ini</label>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -188,7 +186,6 @@
                 const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
                 const fieldsToDeleteContainer = document.getElementById('fieldsToDeleteContainer');
 
-                // Track removed fields that have data (for confirmation)
                 let fieldsPendingRemoveWithData = [];
 
                 function updateRemoveButtonsVisibility() {
@@ -218,33 +215,33 @@
                 addFieldBtn.addEventListener('click', function() {
                     const index = fieldDefinitionsWrapper.children.length;
                     const fieldHtml = `
-                    <div class="field-definition mb-3 border rounded p-3 position-relative" data-has-value="0">
-                        <button type="button" class="btn-close position-absolute top-0 end-0 remove-field-btn" aria-label="Remove"></button>
-                        <div class="mb-2">
-                            <label class="form-label">Label Field</label>
-                            <input type="text" name="fields[${index}][label]" class="form-control" required>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Tipe Field</label>
-                            <select name="fields[${index}][type]" class="form-select" required>
-                                <option value="text">Text</option>
-                                <option value="number">Number</option>
-                                <option value="date">Date</option>
-                                <option value="email">Email</option>
-                                <option value="textarea">Textarea</option>
-                            </select>
-                        </div>
-                        <div class="mb-2 form-check">
-                            <input type="hidden" name="fields[${index}][required]" value="N">
-                            <input class="form-check-input" type="checkbox" name="fields[${index}][required]" id="required_${index}" value="Y">
-                            <label class="form-check-label" for="required_${index}">Wajib Diisi</label>
-                        </div>
-                        <div class="mb-2 form-check">
-                            <input type="hidden" name="fields[${index}][active]" value="0">
-                            <input class="form-check-input" type="checkbox" name="fields[${index}][active]" id="active_${index}" value="1" checked>
-                            <label class="form-check-label" for="active_${index}">Aktifkan Field Ini</label>
-                        </div>
+                <div class="field-definition mb-3 border rounded p-3 position-relative" data-has-value="0">
+                    <button type="button" class="btn-close position-absolute top-0 end-0 remove-field-btn" aria-label="Remove"></button>
+                    <div class="mb-2">
+                        <label class="form-label">Label Field</label>
+                        <input type="text" name="fields[${index}][label]" class="form-control" required>
                     </div>
+                    <div class="mb-2">
+                        <label class="form-label">Tipe Field</label>
+                        <select name="fields[${index}][type]" class="form-select" required>
+                            <option value="text">Text</option>
+                            <option value="number">Number</option>
+                            <option value="date">Date</option>
+                            <option value="email">Email</option>
+                            <option value="textarea">Textarea</option>
+                        </select>
+                    </div>
+                    <div class="mb-2 form-check">
+                        <input type="hidden" name="fields[${index}][required]" value="N">
+                        <input class="form-check-input" type="checkbox" name="fields[${index}][required]" id="required_${index}" value="Y">
+                        <label class="form-check-label" for="required_${index}">Wajib Diisi</label>
+                    </div>
+                    <div class="mb-2 form-check">
+                        <input type="hidden" name="fields[${index}][active]" value="N">
+                        <input class="form-check-input" type="checkbox" name="fields[${index}][active]" id="active_${index}" value="Y" checked>
+                        <label class="form-check-label" for="active_${index}">Aktifkan Field Ini</label>
+                    </div>
+                </div>
                 `;
 
                     const temp = document.createElement('div');
@@ -263,12 +260,9 @@
                             const fieldDiv = this.closest('.field-definition');
                             const hasValue = fieldDiv.getAttribute('data-has-value') === '1';
                             if (hasValue) {
-                                // Tambahkan ke daftar yang perlu konfirmasi hapus
                                 fieldsPendingRemoveWithData.push(fieldDiv);
-                                // Tampilkan modal konfirmasi hapus
                                 confirmDeleteModal.show();
                             } else {
-                                // Langsung hapus elemen jika tidak ada data terkait
                                 fieldDiv.remove();
                                 updateIndices();
                                 updateRemoveButtonsVisibility();
@@ -279,7 +273,6 @@
 
                 function updateIndices() {
                     [...fieldDefinitionsWrapper.children].forEach((fieldDiv, i) => {
-                        // Update atribut name untuk setiap input sesuai indeks baru
                         fieldDiv.querySelectorAll('input, select').forEach(input => {
                             const name = input.getAttribute('name');
                             if (name) {
@@ -290,29 +283,31 @@
                     });
                 }
 
-                // Saat konfirmasi hapus field dengan data
                 confirmDeleteBtn.onclick = function() {
                     fieldsPendingRemoveWithData.forEach(fieldDiv => {
-                        // Ambil ID field yang dihapus (input hidden fields[][id])
-                        const fieldIdInput = fieldDiv.querySelector('input[type="hidden"][name$="[id]"]');
-                        if (fieldIdInput && fieldIdInput.value) {
-                            // Buat input hidden baru fields_to_delete[] dan append ke container form
-                            const input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = 'fields_to_delete[]';
-                            input.value = fieldIdInput.value;
-                            fieldsToDeleteContainer.appendChild(input);
+                        // Jika ada input hidden id, tambahkan id ke fields_to_delete
+                        const inputId = fieldDiv.querySelector('input[name$="[id]"]');
+                        if (inputId) {
+                            const fieldId = inputId.value;
+                            if (fieldId) {
+                                const inputDelete = document.createElement('input');
+                                inputDelete.type = 'hidden';
+                                inputDelete.name = 'fields_to_delete[]';
+                                inputDelete.value = fieldId;
+                                fieldsToDeleteContainer.appendChild(inputDelete);
+                            }
                         }
                         fieldDiv.remove();
                     });
                     fieldsPendingRemoveWithData = [];
+                    confirmDeleteModal.hide();
                     updateIndices();
                     updateRemoveButtonsVisibility();
-                    confirmDeleteModal.hide();
                 };
 
-                bindRemoveButtons();
                 updateRemoveButtonsVisibility();
+                bindRemoveButtons();
+                toggleFieldsInputs(addFieldsToggle.checked);
             });
         </script>
     </main>
