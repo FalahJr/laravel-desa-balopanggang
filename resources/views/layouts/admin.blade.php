@@ -26,7 +26,7 @@
         <div id="layoutSidenav_nav">
             @include('includes.sidebar-admin')
         </div>
-        <div id="layoutSidenav_content">
+        <div id="layoutSidenav_content" style="background-color: #F1E9D2;">
             @yield('container')
             @include('includes.footer-admin')
         </div>

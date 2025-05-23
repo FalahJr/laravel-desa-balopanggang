@@ -1,4 +1,4 @@
-<nav class="sidenav shadow-right sidenav-light">
+<nav class="sidenav shadow-right sidenav-light" style="background-color: #F5F0E6;">
     <div class="sidenav-menu">
         <div class="nav accordion" id="accordionSidenav">
             <!-- Sidenav Menu Heading (Account)-->
@@ -77,41 +77,6 @@
             @endif
             <!-- Sidenav Link (Dashboard)-->
 
-            @if (Session('user')['role'] == 'staff administrasi')
-                {{-- <a class="nav-link {{ request()->is('admin/sender*') ? 'active' : '' }}"
-                        href="{{ route('sender.index') }}">
-                        <div class="nav-link-icon"><i data-feather="users"></i></div>
-                        Pengirim Surat
-                    </a> --}}
-
-                <a class="nav-link {{ request()->is('staff/dashboard') ? 'active' : '' }}"
-                    href="{{ url('staff/dashboard') }}">
-                    <div class="nav-link-icon"><i data-feather="activity"></i></div>
-                    Dashboard
-                </a>
-
-                <a class="nav-link {{ request()->is('staff/letter/create') ? 'active' : '' }}"
-                    href="{{ url('staff/letter/create') }}">
-                    <div class="nav-link-icon"><i data-feather="mail"></i></div>
-                    Tambah Surat
-                </a>
-                <a class="nav-link {{ request()->is('staff/letter/surat-masuk') ? 'active' : '' }}"
-                    href="{{ url('staff/letter/surat-masuk') }}">
-                    <div class="nav-link-icon"><i data-feather="arrow-right"></i></div>
-                    Surat Masuk
-                </a>
-                <a class="nav-link {{ request()->is('staff/letter/surat-keluar') ? 'active' : '' }}"
-                    href="{{ url('staff/letter/surat-keluar') }}">
-                    <div class="nav-link-icon"><i data-feather="arrow-left"></i></div>
-                    Surat Keluar
-                </a>
-
-                {{-- <a class="nav-link {{ request()->is('staff/setting*') ? 'active' : '' }}"
-                    href="{{ url('staff/setting/') }}">
-                    <div class="nav-link-icon"><i data-feather="settings"></i></div>
-                    Profile
-                </a> --}}
-            @endif
 
             @if (Session('user')['role'] == 'kepala desa')
                 {{-- <a class="nav-link {{ request()->is('admin/sender*') ? 'active' : '' }}"
@@ -126,13 +91,8 @@
                     Dashboard
                 </a>
 
-                <a class="nav-link {{ request()->is('kepala-desa/user*') ? 'active' : '' }}"
-                    href="{{ url('kepala-desa/user/') }}">
-                    <div class="nav-link-icon"><i data-feather="user"></i></div>
-                    Data User
-                </a>
-                <a class="nav-link {{ request()->is('kepala-desa/letter/surat-masuk') ? 'active' : '' }}"
-                    href="{{ url('kepala-desa/letter/surat-masuk') }}">
+                <a class="nav-link {{ request()->is('kepala-desa/surat-masuk') ? 'active' : '' }}"
+                    href="{{ url('kepala-desa/surat-masuk') }}">
                     <div class="nav-link-icon"><i data-feather="arrow-right"></i></div>
                     Surat Masuk
                 </a>
@@ -150,38 +110,7 @@
                 </a> --}}
             @endif
 
-            @if (Session('user')['role'] == 'guru')
-                {{-- <a class="nav-link {{ request()->is('admin/sender*') ? 'active' : '' }}"
-                href="{{ route('sender.index') }}">
-                <div class="nav-link-icon"><i data-feather="users"></i></div>
-                Pengirim Surat
-            </a> --}}
 
-                <a class="nav-link {{ request()->is('guru/dashboard') ? 'active' : '' }}"
-                    href="{{ url('guru/dashboard') }}">
-                    <div class="nav-link-icon"><i data-feather="activity"></i></div>
-                    Dashboard
-                </a>
-
-
-                <a class="nav-link {{ request()->is('guru/letter/surat-masuk') ? 'active' : '' }}"
-                    href="{{ url('guru/letter/surat-masuk') }}">
-                    <div class="nav-link-icon"><i data-feather="arrow-right"></i></div>
-                    Surat Masuk
-                </a>
-                <a class="nav-link {{ request()->is('guru/letter/surat-keluar') ? 'active' : '' }}"
-                    href="{{ url('guru/letter/surat-keluar') }}">
-                    <div class="nav-link-icon"><i data-feather="arrow-left"></i></div>
-                    Surat Keluar
-                </a>
-                =
-
-                {{-- <a class="nav-link {{ request()->is('guru/setting*') ? 'active' : '' }}"
-                    href="{{ url('guru/setting/') }}">
-                    <div class="nav-link-icon"><i data-feather="settings"></i></div>
-                    Profile
-                </a> --}}
-            @endif
 
 
 

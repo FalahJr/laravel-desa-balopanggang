@@ -61,7 +61,7 @@ class LetterController extends Controller
         $validatedData['status'] = 'diproses';
 
         if (Letter::create($validatedData)) {
-         SendemailController::Send($cekDataUser->nama_lengkap, "Selamat! Pengajuan surat Anda telah sukses diajukan. Kami akan melakukan Validasi Operator.<br><br> Mohon tunggu pemberitahuan selanjutnya yaa","Permohonan Perizinan Berhasil Diajukan", $cekDataUser->email);
+            SendemailController::Send($cekDataUser->nama_lengkap, "Selamat! Pengajuan surat Anda telah sukses diajukan. Kami akan melakukan Validasi Operator.<br><br> Mohon tunggu pemberitahuan selanjutnya yaa", "Permohonan Perizinan Berhasil Diajukan", $cekDataUser->email);
 
             $notifikasi = new Notifikasi;
             $notifikasi->role = "Murid";

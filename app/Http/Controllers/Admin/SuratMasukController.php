@@ -22,8 +22,10 @@ class SuratMasukController extends Controller
 
             return DataTables::of($query)
                 ->addColumn('action', function ($item) {
-                    $prefix = 'admin'; // sesuaikan jika ada custom prefix
-                    return '
+                    if (Session('user')['role'] == 'admin') {
+
+                        $prefix = 'admin'; // sesuaikan jika ada custom prefix
+                        return '
                      <a class="btn btn-info btn-xs" href="' . url($prefix . '/surat-masuk/' . $item->id) . '">
             <i class="fas fa-eye"></i> &nbsp; Lihat
         </a>
@@ -37,6 +39,15 @@ class SuratMasukController extends Controller
                             </button>
                         </form>
                     ';
+                    } else if (Session('user')['role'] == 'kepala desa') {
+                        $prefix = 'kepala-desa'; // sesuaikan jika ada custom prefix
+                        return '
+                     <a class="btn btn-info btn-xs" href="' . url($prefix . '/surat-masuk/' . $item->id) . '">
+            <i class="fas fa-eye"></i> &nbsp; Lihat
+        </a>
+                       
+                    ';
+                    }
                 })
                 ->addIndexColumn()
                 ->removeColumn('id')
@@ -330,6 +341,36 @@ class SuratMasukController extends Controller
             : null;
 
         return view('pages.admin.surat-masuk.download', compact('surat', 'fields', 'lampiranUrl'));
+    }
+
+    public function approve(Request $request, $id)
+    {
+        // dd('Function approve terpanggil');
+
+        $item = Surat::findOrFail($id);
+
+        if ($item->status === 'Diterima') {
+            return redirect()->back()->with('info', 'Surat ini sudah disetujui sebelumnya.');
+        }
+
+        $item->update(['status' => 'Diterima']);
+
+        return redirect()->back()
+            ->with('success', 'Surat berhasil disetujui.');
+    }
+
+    public function reject(Request $request, $id)
+    {
+        $item = Surat::findOrFail($id);
+
+        if ($item->status === 'Ditolak') {
+            return redirect()->back()->with('info', 'Surat ini sudah ditolak sebelumnya.');
+        }
+
+        $item->update(['status' => 'Ditolak']);
+
+        return redirect()->back()
+            ->with('success', 'Surat berhasil ditolak.');
     }
 }
 

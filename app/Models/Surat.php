@@ -15,6 +15,7 @@ class Surat extends Model
         'nama_surat',
         'tanggal_surat',
         'file_lampiran',
+        'status'
     ];
 
     protected $dates = ['tanggal_surat'];
