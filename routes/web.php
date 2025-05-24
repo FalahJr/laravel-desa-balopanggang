@@ -125,12 +125,12 @@ Route::prefix('kepala-desa')
         ]);
 
         Route::prefix('surat-masuk')->name('surat-masuk.')->group(function () {
-            Route::get('/', [SuratMasukController::class, 'index'])->name('index');
-            Route::get('/create', [SuratMasukController::class, 'create'])->name('create');
-            Route::post('/', [SuratMasukController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [SuratMasukController::class, 'edit'])->name('edit');
-            Route::put('/{id}', [SuratMasukController::class, 'update'])->name('update');
-            Route::delete('/{id}', [SuratMasukController::class, 'destroy'])->name('destroy');
+            Route::get('/', [SuratMasukController::class, 'index']);
+            // Route::get('/create', [SuratMasukController::class, 'create'])->name('create');
+            // Route::post('/', [SuratMasukController::class, 'store'])->name('store');
+            // Route::get('/{id}/edit', [SuratMasukController::class, 'edit'])->name('edit');
+            // Route::put('/{id}', [SuratMasukController::class, 'update'])->name('update');
+            // Route::delete('/{id}', [SuratMasukController::class, 'destroy'])->name('destroy');
             Route::get('/{id}', [SuratMasukController::class, 'show'])->name('show'); // <- Tambahkan ini
             Route::get('/{id}/download', [SuratMasukController::class, 'download'])->name('download');
             Route::get('/{id}/approve', [SuratMasukController::class, 'approve'])->name('approve');
