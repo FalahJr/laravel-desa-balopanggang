@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ArsipController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Admin\UserController;
@@ -75,6 +76,17 @@ Route::prefix('admin')
             Route::get('/{id}/download', [SuratKeluarController::class, 'download'])->name('download');
         });
 
+        Route::prefix('arsip')->name('arsip.')->group(function () {
+            Route::get('/', [ArsipController::class, 'index'])->name('index');
+            // Route::get('/create', [SuratKeluarController::class, 'create'])->name('create');
+            // Route::post('/', [SuratKeluarController::class, 'store'])->name('store');
+            // Route::get('/{id}/edit', [SuratKeluarController::class, 'edit'])->name('edit');
+            // Route::put('/{id}', [SuratKeluarController::class, 'update'])->name('update');
+            Route::delete('/{id}', [ArsipController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}', [ArsipController::class, 'show'])->name('show'); // <- Tambahkan ini
+            Route::get('/{id}/download', [ArsipController::class, 'download'])->name('download');
+        });
+
         Route::get('field-definitions/{jenisSuratId}', [FieldDefinitionController::class, 'byJenisSurat']);
 
 
@@ -138,6 +150,30 @@ Route::prefix('kepala-desa')
             Route::get('/{id}/download', [SuratMasukController::class, 'download'])->name('download');
             Route::get('/{id}/approve', [SuratMasukController::class, 'approve'])->name('approve');
             Route::get('/{id}/reject', [SuratMasukController::class, 'reject'])->name('reject');
+        });
+
+        Route::prefix('surat-keluar')->name('surat-keluar.')->group(function () {
+            Route::get('/', [SuratKeluarController::class, 'index']);
+            // Route::get('/create', [SuratKeluarController::class, 'create'])->name('create');
+            // Route::post('/', [SuratKeluarController::class, 'store'])->name('store');
+            // Route::get('/{id}/edit', [SuratKeluarController::class, 'edit'])->name('edit');
+            // Route::put('/{id}', [SuratKeluarController::class, 'update'])->name('update');
+            // Route::delete('/{id}', [SuratKeluarController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}', [SuratKeluarController::class, 'show'])->name('show'); // <- Tambahkan ini
+            Route::get('/{id}/download', [SuratKeluarController::class, 'download'])->name('download');
+            Route::get('/{id}/approve', [SuratKeluarController::class, 'approve'])->name('approve');
+            Route::get('/{id}/reject', [SuratKeluarController::class, 'reject'])->name('reject');
+        });
+
+        Route::prefix('arsip')->name('arsip.')->group(function () {
+            Route::get('/', [ArsipController::class, 'index'])->name('index');
+            // Route::get('/create', [SuratKeluarController::class, 'create'])->name('create');
+            // Route::post('/', [SuratKeluarController::class, 'store'])->name('store');
+            // Route::get('/{id}/edit', [SuratKeluarController::class, 'edit'])->name('edit');
+            // Route::put('/{id}', [SuratKeluarController::class, 'update'])->name('update');
+            // Route::delete('/{id}', [ArsipController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}', [ArsipController::class, 'show'])->name('show'); // <- Tambahkan ini
+            Route::get('/{id}/download', [ArsipController::class, 'download'])->name('download');
         });
 
 

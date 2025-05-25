@@ -47,11 +47,11 @@
                     <div class="nav-link-icon"><i data-feather="mail"></i></div>
                     Surat
                 </a> --}}
-                <a class="nav-link {{ request()->is('admin/letter/create') ? 'active' : '' }}"
+                {{-- <a class="nav-link {{ request()->is('admin/letter/create') ? 'active' : '' }}"
                     href="{{ url('admin/letter/create') }}">
                     <div class="nav-link-icon"><i data-feather="mail"></i></div>
                     Tambah Surat
-                </a>
+                </a> --}}
                 <a class="nav-link {{ request()->is('admin/surat-masuk') ? 'active' : '' }}"
                     href="{{ url('admin/surat-masuk') }}">
                     <div class="nav-link-icon"><i data-feather="arrow-right"></i></div>
@@ -63,9 +63,9 @@
                     Surat Keluar
                 </a>
 
-                <a class="nav-link {{ request()->is('admin/letter/arsip') ? 'active' : '' }}"
-                    href="{{ url('admin/letter/arsip') }}">
-                    <div class="nav-link-icon"><i data-feather="arrow-left"></i></div>
+                <a class="nav-link {{ request()->is('admin/arsip') ? 'active' : '' }}"
+                    href="{{ url('admin/arsip') }}">
+                    <div class="nav-link-icon"><i data-feather="archive"></i></div>
                     Arsip
                 </a>
 
@@ -96,10 +96,16 @@
                     <div class="nav-link-icon"><i data-feather="arrow-right"></i></div>
                     Surat Masuk
                 </a>
-                <a class="nav-link {{ request()->is('kepala-desa/letter/surat-keluar') ? 'active' : '' }}"
-                    href="{{ url('kepala-desa/letter/surat-keluar') }}">
+                <a class="nav-link {{ request()->is('kepala-desa/surat-keluar') ? 'active' : '' }}"
+                    href="{{ url('kepala-desa/surat-keluar') }}">
                     <div class="nav-link-icon"><i data-feather="arrow-left"></i></div>
                     Surat Keluar
+                </a>
+
+                <a class="nav-link {{ request()->is('kepala-desa/arsip') ? 'active' : '' }}"
+                    href="{{ url('kepala-desa/arsip') }}">
+                    <div class="nav-link-icon"><i data-feather="archive"></i></div>
+                    Arsip
                 </a>
 
 

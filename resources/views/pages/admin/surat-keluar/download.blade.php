@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Detail Surat Masuk</title>
+    <title>Detail Surat Keluar</title>
     <style>
         body {
             font-family: sans-serif;

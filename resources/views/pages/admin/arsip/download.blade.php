@@ -74,7 +74,7 @@
             <thead>
                 <tr>
                     <th>Label</th>
-                    <th>Isi</th>
+                    <th>Nilai</th>
                 </tr>
             </thead>
             <tbody>
