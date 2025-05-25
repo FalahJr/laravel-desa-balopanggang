@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\FieldDefinitionController;
 use App\Http\Controllers\Admin\JenisSuratController;
 use App\Http\Controllers\Admin\SuratController;
+use App\Http\Controllers\Admin\SuratKeluarController;
 use App\Http\Controllers\Admin\SuratMasukController;
 
 /*
@@ -63,13 +64,15 @@ Route::prefix('admin')
         });
 
         // Surat Keluar
-        Route::prefix('admin/surat-keluar')->name('surat-keluar.')->group(function () {
+        Route::prefix('surat-keluar')->name('surat-keluar.')->group(function () {
             Route::get('/', [SuratKeluarController::class, 'index'])->name('index');
             Route::get('/create', [SuratKeluarController::class, 'create'])->name('create');
             Route::post('/', [SuratKeluarController::class, 'store'])->name('store');
             Route::get('/{id}/edit', [SuratKeluarController::class, 'edit'])->name('edit');
             Route::put('/{id}', [SuratKeluarController::class, 'update'])->name('update');
             Route::delete('/{id}', [SuratKeluarController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}', [SuratKeluarController::class, 'show'])->name('show'); // <- Tambahkan ini
+            Route::get('/{id}/download', [SuratKeluarController::class, 'download'])->name('download');
         });
 
         Route::get('field-definitions/{jenisSuratId}', [FieldDefinitionController::class, 'byJenisSurat']);
@@ -136,6 +139,9 @@ Route::prefix('kepala-desa')
             Route::get('/{id}/approve', [SuratMasukController::class, 'approve'])->name('approve');
             Route::get('/{id}/reject', [SuratMasukController::class, 'reject'])->name('reject');
         });
+
+
+
 
         Route::get('letter/surat-masuk', [LetterController::class, 'incoming_mail']);
         Route::get('letter/surat-keluar', [LetterController::class, 'outgoing_mail']);

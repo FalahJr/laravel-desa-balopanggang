@@ -54,6 +54,21 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                                {{-- Tambahan field tipe --}}
+                                <div class="mb-3">
+                                    <label for="tipe" class="small mb-1">Tipe Surat</label>
+                                    <select name="tipe" id="tipe"
+                                        class="form-select @error('tipe') is-invalid @enderror" required>
+                                        <option value="">-- Pilih Tipe Surat --</option>
+                                        <option value="masuk" {{ old('tipe') == 'masuk' ? 'selected' : '' }}>Masuk</option>
+                                        <option value="keluar" {{ old('tipe') == 'keluar' ? 'selected' : '' }}>Keluar
+                                        </option>
+                                    </select>
+                                    @error('tipe')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
 
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="checkbox" value="1" id="addFieldsToggle"
@@ -79,8 +94,8 @@
                                                     </div>
                                                     <div class="mb-2">
                                                         <label class="form-label">Tipe Field</label>
-                                                        <select name="fields[{{ $index }}][type]" class="form-select"
-                                                            required>
+                                                        <select name="fields[{{ $index }}][type]"
+                                                            class="form-select" required>
                                                             <option value="text"
                                                                 {{ isset($field['type']) && $field['type'] == 'text' ? 'selected' : '' }}>
                                                                 Text</option>

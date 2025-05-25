@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Jenis Surat
+    Surat
 @endsection
 
 @section('container')
@@ -15,29 +15,30 @@
                                 <div class="page-header-icon">
                                     <i data-feather="file-text"></i>
                                 </div>
-                                Jenis Surat
+                                Data Surat
                             </h1>
-                            <div class="page-header-subtitle">List Jenis Surat</div>
+                            <div class="page-header-subtitle">List Data Surat</div>
                         </div>
                     </div>
                     <nav class="mt-4 rounded" aria-label="breadcrumb">
                         <ol class="breadcrumb px-3 py-2 rounded mb-0">
                             <li class="breadcrumb-item"><a href="{{ route('admin-dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Jenis Surat</li>
+                            <li class="breadcrumb-item active">Surat</li>
                         </ol>
                     </nav>
                 </div>
             </div>
         </header>
+
         <!-- Main page content-->
         <div class="container-xl px-4 mt-n10">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card card-header-actions mb-4">
                         <div class="card-header">
-                            List Jenis Surat
-                            <a class="btn btn-sm btn-primary" href="{{ route('jenis-surat.create') }}">
-                                Tambah Jenis Surat Baru
+                            List Surat
+                            <a class="btn btn-sm btn-primary" href="{{ route('surat-keluar.create') }}">
+                                Tambah Surat
                             </a>
                         </div>
                         <div class="card-body">
@@ -60,13 +61,15 @@
                                         aria-label="Close"></button>
                                 </div>
                             @endif
-                            {{-- List Data --}}
+
+                            {{-- Tabel Surat --}}
                             <table class="table table-striped table-hover table-sm" id="crudTable">
                                 <thead>
                                     <tr>
                                         <th width="10">No.</th>
-                                        <th>Nama Jenis Surat</th>
-                                        <th>Tipe</th>
+                                        <th>No Surat</th>
+                                        <th>Nama Surat</th>
+                                        <th>Tanggal Surat</th>
                                         <th width="15%">Aksi</th>
                                     </tr>
                                 </thead>
@@ -95,13 +98,30 @@
                     searchable: false
                 },
                 {
-                    data: 'nama',
-                    name: 'nama'
+                    data: 'nomor_surat',
+                    name: 'nomor_surat'
                 },
                 {
-                    data: 'tipe',
-                    name: 'tipe'
+                    data: 'nama_surat',
+                    name: 'nama_surat'
                 },
+                {
+                    data: 'tanggal_surat',
+                    name: 'tanggal_surat',
+                    render: function(data, type, row) {
+                        if (!data) return '';
+                        var date = new Date(data);
+                        var day = date.getDate();
+                        var months = [
+                            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                        ];
+                        var monthName = months[date.getMonth()];
+                        var year = date.getFullYear();
+                        return day + ' ' + monthName + ' ' + year;
+                    }
+                },
+
                 {
                     data: 'action',
                     name: 'action',

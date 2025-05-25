@@ -10,6 +10,7 @@ class JenisSurat extends Model
 
     protected $fillable = [
         'nama',
+        'tipe', // 'masuk' atau 'keluar'
     ];
 
     // Relasi: JenisSurat punya banyak FieldDefinition
