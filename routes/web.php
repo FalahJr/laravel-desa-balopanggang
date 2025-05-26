@@ -189,7 +189,7 @@ Route::prefix('kepala-desa')
         Route::get('print/surat-masuk', [PrintController::class, 'index']);
         Route::get('print/surat-keluar', [PrintController::class, 'outgoing'])->name('print-surat-keluar');
 
-        Route::resource('user', UserController::class);
+        // Route::resource('user', UserController::class);
         Route::resource('setting', SettingController::class, [
             'except' => ['show']
         ]);
@@ -219,7 +219,7 @@ Route::prefix('guru')
         Route::get('print/surat-masuk', [PrintController::class, 'index']);
         Route::get('print/surat-keluar', [PrintController::class, 'outgoing'])->name('print-surat-keluar');
 
-        Route::resource('user', UserController::class);
+        // Route::resource('user', UserController::class);
         Route::resource('setting', SettingController::class, [
             'except' => ['show']
         ]);
@@ -249,7 +249,7 @@ Route::prefix('staff')
         Route::get('print/surat-masuk', [PrintController::class, 'index']);
         Route::get('print/surat-keluar', [PrintController::class, 'outgoing'])->name('print-surat-keluar');
 
-        Route::resource('user', UserController::class);
+        // Route::resource('user', UserController::class);
         Route::resource('setting', SettingController::class, [
             'except' => ['show']
         ]);

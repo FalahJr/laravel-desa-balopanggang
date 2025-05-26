@@ -101,9 +101,9 @@
                                                 {{ old('role') == 'staff administrasi' ? 'selected' : '' }}>Staff
                                                 Administrasi
                                             </option>
-                                            <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>Guru
+                                            {{-- <option value="guru" {{ old('role') == 'guru' ? 'selected' : '' }}>Guru --}}
                                             </option>
-                                            <option value="kepala sekolah"
+                                            <option value="kepala desa"
                                                 {{ old('role') == 'kepala sekolah' ? 'selected' : '' }}>Kepala Sekolah
                                             </option>
                                         </select>

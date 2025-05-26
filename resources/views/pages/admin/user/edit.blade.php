@@ -41,10 +41,12 @@
                                             <li>{{ $error }}</li>
                                         @endforeach
                                     </ul>
-                                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <button class="btn-close" type="button" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
                                 </div>
                             @endif
-                            <form action="{{ route('user.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('user.update', $item->id) }}" method="POST"
+                                enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
                                 <!-- Form Row-->
@@ -52,10 +54,11 @@
                                     <!-- Form Group (first name)-->
                                     <div class="col-md-6">
                                         <label class="small mb-1" for="name">Nama</label>
-                                        <input class="form-control @error('name') is-invalid @enderror" name="name" type="text" value="{{ $item->name }}"  required/>
+                                        <input class="form-control @error('name') is-invalid @enderror" name="name"
+                                            type="text" value="{{ $item->name }}" required />
                                         @error('name')
                                             <div class="invalid-feedback">
-                                                {{ $message; }}
+                                                {{ $message }}
                                             </div>
                                         @enderror
                                     </div>
@@ -64,26 +67,29 @@
                                 <div class="mb-3">
                                     <div class="col-md-6">
                                         <label class="small mb-1" for="email">Email</label>
-                                        <input class="form-control @error('email') is-invalid @enderror" name="email" type="email" value="{{ $item->email }}" required/>
+                                        <input class="form-control @error('email') is-invalid @enderror" name="email"
+                                            type="email" value="{{ $item->email }}" required />
                                         @error('email')
                                             <div class="invalid-feedback">
-                                                {{ $message; }}
+                                                {{ $message }}
                                             </div>
                                         @enderror
-                                    </div>   
+                                    </div>
                                 </div>
                                 <!-- Form Group (Password)-->
                                 <div class="mb-3">
                                     <div class="col-md-6">
                                         <label class="small mb-1" for="password">Password</label>
-                                        <input class="form-control @error('password') is-invalid @enderror" name="password" type="password"/>
-                                        <small class="form-text text-muted">Kosongkan jika tidak ingin mengganti password</small>
+                                        <input class="form-control @error('password') is-invalid @enderror" name="password"
+                                            type="password" />
+                                        <small class="form-text text-muted">Kosongkan jika tidak ingin mengganti
+                                            password</small>
                                         @error('password')
                                             <div class="invalid-feedback">
-                                                {{ $message; }}
+                                                {{ $message }}
                                             </div>
                                         @enderror
-                                    </div>   
+                                    </div>
                                 </div>
                                 <!-- Submit button-->
                                 <button class="btn btn-primary" type="submit">
@@ -97,4 +103,3 @@
         </div>
     </main>
 @endsection
-

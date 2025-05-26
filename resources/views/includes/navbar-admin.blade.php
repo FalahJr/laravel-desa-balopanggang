@@ -9,7 +9,13 @@
     <!-- * * * * * * When using an image, we recommend the SVG format.-->
     <!-- * * * * * * Dimensions: Maximum height: 32px, maximum width: 240px-->
     <a class="navbar-brand pe-3 ps-4 ps-lg-2" href="{{ route('admin-dashboard') }}">
-        Sipraga
+        <div class="d-flex align-items-center">
+            <img class="navbar-brand-img" src="{{ url('/public/storage/assets/logo-sipraga-gresik.png') }}"
+                style=" height: 5vh" alt="Logo" />
+            <span class="ms-2 d-none d-lg-block text-dark">SIPRAGA</span>
+
+        </div>
+        {{-- Sipraga --}}
     </a>
     <!-- Navbar Search Input-->
     <!-- * * Note: * * Visible only on and above the lg breakpoint-->
@@ -50,7 +56,7 @@
                     </div>
                 </h6>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item"
+                {{-- <a class="dropdown-item"
                     @if (Session('user')['role'] == 'admin') href="{{ url('admin/setting') }}"
                    @elseif (Session('user')['role'] == 'guru')
                    href="{{ url('guru/setting') }}"
@@ -60,7 +66,7 @@
                    href="{{ url('staff/setting') }}" @endif>
                     <div class="dropdown-item-icon"><i data-feather="settings"></i></div>
                     Account
-                </a>
+                </a> --}}
                 <form action="{{ url('logout') }}" method="post">
                     @csrf
                     <button type="submit" class="dropdown-item">

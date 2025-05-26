@@ -7,8 +7,15 @@
                 <div class="col-lg-5">
                     <!-- Basic login form-->
                     <div class="card shadow-lg border-0 rounded-lg mt-5">
-                        <div class="card-header justify-content-center">
-                            <h3 class="fw-light my-4">Login</h3>
+                        <div class="card-header text-center">
+                            {{-- Logo Unesa dan SIPRAGA --}}
+                            <div class="mb-3">
+                                <img src="{{ url('/public/storage/assets/logo-unesa.jpg') }}" alt="Logo Unesa"
+                                    style="height: 15vh; margin-right: 10px;">
+                                <img src="{{ url('/public/storage/assets/logo-sipraga-gresik.png') }}" alt="Logo SIPRAGA"
+                                    style="height: 15vh;">
+                            </div>
+                            <h1 class="fw-light my-4 bold">LOGIN SIPRAGA</h1>
                         </div>
                         <div class="card-body">
                             @if (session()->has('success'))
@@ -57,18 +64,14 @@
                                 </div>
                                 <!-- Form Group (login box)-->
                                 <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                    <a class="small" href="#">
-
-                                    </a>
+                                    <a class="small" href="#"></a>
                                     <button type="submit" class="btn btn-primary">Login</button>
                                 </div>
                             </form>
                         </div>
                         <div class="card-footer text-center">
                             <div class="small">
-                                {{-- <a href="/">
-                                    <i class="fas fa-arrow-left"></i> Pergi ke Texno.id
-                                </a> --}}
+                                {{-- Optional footer link --}}
                             </div>
                         </div>
                     </div>
