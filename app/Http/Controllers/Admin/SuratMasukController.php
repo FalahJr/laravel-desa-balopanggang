@@ -47,6 +47,18 @@ class SuratMasukController extends Controller
         </a>
                        
                     ';
+                    } else {
+
+                        $prefix = 'staff'; // sesuaikan jika ada custom prefix
+                        return '
+                     <a class="btn btn-info btn-xs" href="' . url($prefix . '/surat-masuk/' . $item->id) . '">
+            <i class="fas fa-eye"></i> &nbsp; Lihat
+        </a>
+                        <a class="btn btn-primary btn-xs" href="' . url($prefix . '/surat-masuk/' . $item->id . '/edit') . '">
+                            <i class="fas fa-edit"></i> &nbsp; Ubah
+                        </a>
+                       
+                    ';
                     }
                 })
                 ->addIndexColumn()
@@ -176,7 +188,11 @@ class SuratMasukController extends Controller
 
             DB::commit();
 
-            return redirect()->route('surat-masuk.index')->with('success', 'Surat masuk berhasil disimpan.');
+            if (Session('user')['role'] == 'admin') {
+                return redirect('/admin/surat-masuk')->with('success', 'Surat masuk berhasil disimpan.');
+            } else {
+                return redirect('/staff/surat-masuk')->with('success', 'Surat masuk berhasil disimpan.');
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors('Gagal menyimpan data: ' . $e->getMessage())->withInput();
@@ -280,7 +296,12 @@ class SuratMasukController extends Controller
 
             DB::commit();
 
-            return redirect()->route('surat-masuk.index')->with('success', 'Surat masuk berhasil diperbarui.');
+            // return redirect()->route('surat-masuk.index')->with('success', 'Surat masuk berhasil diperbarui.');
+            if (Session('user')['role'] == 'admin') {
+                return redirect('/admin/surat-masuk')->with('success', 'Surat masuk berhasil diperbarui.');
+            } else {
+                return redirect('/staff/surat-masuk')->with('success', 'Surat masuk berhasil diperbarui.');
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors('Gagal memperbarui data: ' . $e->getMessage())->withInput();
@@ -300,7 +321,12 @@ class SuratMasukController extends Controller
 
             DB::commit();
 
-            return redirect()->route('surat-masuk.index')->with('success', 'Surat masuk berhasil dihapus.');
+            // return redirect()->route('surat-masuk.index')->with('success', 'Surat masuk berhasil dihapus.');
+            if (Session('user')['role'] == 'admin') {
+                return redirect('/admin/surat-masuk')->with('success', 'Surat masuk berhasil dihapus.');
+            } else {
+                return redirect('/staff/surat-masuk')->with('success', 'Surat masuk berhasil dihapus.');
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors('Gagal menghapus data: ' . $e->getMessage());

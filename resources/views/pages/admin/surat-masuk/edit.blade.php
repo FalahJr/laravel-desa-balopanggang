@@ -43,8 +43,9 @@
                                 </div>
                             @endif
 
-                            <form action="{{ route('surat-masuk.update', $surat->id) }}" method="POST"
-                                enctype="multipart/form-data">
+                            <form
+                                action="{{ Session('user')['role'] == 'admin' ? route('surat-masuk.update', $surat->id) : route('surat-masuk.updateStaff', $surat->id) }}"
+                                method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
 

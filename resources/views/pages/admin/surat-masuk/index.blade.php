@@ -37,9 +37,17 @@
                     <div class="card card-header-actions mb-4">
                         <div class="card-header">
                             List Surat
-                            <a class="btn btn-sm btn-primary" href="{{ route('surat-masuk.create') }}">
-                                Tambah Surat
-                            </a>
+                            @if (Session('user')['role'] == 'admin')
+                                <a class="btn btn-sm btn-primary" href="{{ url('admin/surat-masuk/create') }}">
+                                    Tambah Surat
+                                </a>
+                            @elseif (Session('user')['role'] == 'staff administrasi')
+                                <a class="btn btn-sm btn-primary" href="{{ url('staff/surat-masuk/create') }}">
+                                    Tambah Surat
+                                </a>
+                            @else
+                            @endif
+
                         </div>
                         <div class="card-body">
                             {{-- Alert --}}

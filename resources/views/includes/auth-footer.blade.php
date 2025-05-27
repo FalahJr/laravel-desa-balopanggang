@@ -1,7 +1,7 @@
 <footer class="footer-admin mt-auto footer-dark">
     <div class="container-xl px-4">
         <div class="row">
-            <div class="col-md-6 small text-white">Copyright &copy;Sipraga D4 Administrasi Negara UNESA
+            <div class="col-md-6 small text-white">Copyright &copy;Sipraga Sarjana Terapan Administrasi Negara UNESA
                 {{ date('Y') }}</div>
             <div class="col-md-6 text-md-end small text-white">
                 <a href="#!">Privacy Policy</a>

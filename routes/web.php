@@ -43,6 +43,8 @@ Route::get('/', [LoginController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
 Route::post('/login-action', [LoginController::class, 'login_action']);
 Route::post('/logout', [LoginController::class, 'logout']);
+Route::get('field-definitions/{jenisSuratId}', [FieldDefinitionController::class, 'byJenisSurat']);
+
 
 //Admin
 Route::prefix('admin')
@@ -87,7 +89,6 @@ Route::prefix('admin')
             Route::get('/{id}/download', [ArsipController::class, 'download'])->name('download');
         });
 
-        Route::get('field-definitions/{jenisSuratId}', [FieldDefinitionController::class, 'byJenisSurat']);
 
 
         // Route untuk Field Definitions (kelola jenis field form surat)
@@ -239,12 +240,42 @@ Route::prefix('staff')
         Route::resource('/letter', LetterController::class, [
             'except' => ['show']
         ]);
-        Route::get('letter/surat-masuk', [LetterController::class, 'incoming_mail']);
-        Route::get('letter/surat-keluar', [LetterController::class, 'outgoing_mail']);
+        Route::prefix('surat-masuk')->name('surat-masuk.')->group(function () {
+            Route::get('/', [SuratMasukController::class, 'index']);
+            Route::get('/create', [SuratMasukController::class, 'create'])->name('create');
+            Route::post('/', [SuratMasukController::class, 'store'])->name('storeStaff');
+            Route::get('/{id}/edit', [SuratMasukController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [SuratMasukController::class, 'update'])->name('updateStaff');
+            // Route::delete('/{id}', [SuratMasukController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}', [SuratMasukController::class, 'show'])->name('show'); // <- Tambahkan ini
+            Route::get('/{id}/download', [SuratMasukController::class, 'download'])->name('download');
+            Route::get('/{id}/approve', [SuratMasukController::class, 'approve'])->name('approve');
+            Route::get('/{id}/reject', [SuratMasukController::class, 'reject'])->name('reject');
+        });
 
-        Route::get('letter/surat/{id}', [LetterController::class, 'show']);
-        Route::get('letter/download/{id}', [LetterController::class, 'download_letter'])->name('download-surat-staff');
+        Route::prefix('surat-keluar')->name('surat-keluar.')->group(function () {
+            Route::get('/', [SuratKeluarController::class, 'index']);
+            Route::get('/create', [SuratKeluarController::class, 'create'])->name('create');
+            Route::post('/', [SuratKeluarController::class, 'store'])->name('storeStaff');
+            Route::get('/{id}/edit', [SuratKeluarController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [SuratKeluarController::class, 'update'])->name('updateStaff');
+            // Route::delete('/{id}', [SuratKeluarController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}', [SuratKeluarController::class, 'show'])->name('show'); // <- Tambahkan ini
+            Route::get('/{id}/download', [SuratKeluarController::class, 'download'])->name('download');
+            Route::get('/{id}/approve', [SuratKeluarController::class, 'approve'])->name('approve');
+            Route::get('/{id}/reject', [SuratKeluarController::class, 'reject'])->name('reject');
+        });
 
+        Route::prefix('arsip')->name('arsip.')->group(function () {
+            Route::get('/', [ArsipController::class, 'index'])->name('index');
+            // Route::get('/create', [SuratKeluarController::class, 'create'])->name('create');
+            // Route::post('/', [SuratKeluarController::class, 'store'])->name('store');
+            // Route::get('/{id}/edit', [SuratKeluarController::class, 'edit'])->name('edit');
+            // Route::put('/{id}', [SuratKeluarController::class, 'update'])->name('update');
+            // Route::delete('/{id}', [ArsipController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}', [ArsipController::class, 'show'])->name('show'); // <- Tambahkan ini
+            Route::get('/{id}/download', [ArsipController::class, 'download'])->name('download');
+        });
         //print
         Route::get('print/surat-masuk', [PrintController::class, 'index']);
         Route::get('print/surat-keluar', [PrintController::class, 'outgoing'])->name('print-surat-keluar');

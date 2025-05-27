@@ -47,6 +47,18 @@ class SuratKeluarController extends Controller
         </a>
                        
                     ';
+                    } else {
+
+                        $prefix = 'staff'; // sesuaikan jika ada custom prefix
+                        return '
+                     <a class="btn btn-info btn-xs" href="' . url($prefix . '/surat-keluar/' . $item->id) . '">
+            <i class="fas fa-eye"></i> &nbsp; Lihat
+        </a>
+                        <a class="btn btn-primary btn-xs" href="' . url($prefix . '/surat-keluar/' . $item->id . '/edit') . '">
+                            <i class="fas fa-edit"></i> &nbsp; Ubah
+                        </a>
+                       
+                    ';
                     }
                 })
                 ->addIndexColumn()
@@ -176,7 +188,12 @@ class SuratKeluarController extends Controller
 
             DB::commit();
 
-            return redirect()->route('surat-keluar.index')->with('success', 'Surat keluar berhasil disimpan.');
+            // return redirect()->route('surat-keluar.index')->with('success', 'Surat keluar berhasil disimpan.');
+            if (Session('user')['role'] == 'admin') {
+                return redirect('/admin/surat-keluar')->with('success', 'Surat keluar berhasil disimpan.');
+            } else {
+                return redirect('/staff/surat-keluar')->with('success', 'Surat keluar berhasil disimpan.');
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors('Gagal menyimpan data: ' . $e->getMessage())->withInput();

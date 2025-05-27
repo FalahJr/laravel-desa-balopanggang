@@ -41,7 +41,9 @@
                                 </div>
                             @endif
 
-                            <form action="{{ route('surat-masuk.store') }}" method="POST" enctype="multipart/form-data">
+                            <form
+                                action="{{ Session('user')['role'] == 'admin' ? route('surat-masuk.store') : route('surat-masuk.storeStaff') }}"
+                                method="POST" enctype="multipart/form-data">
                                 @csrf
 
                                 {{-- Nomor Surat DIHAPUS --}}
@@ -111,7 +113,7 @@
             function loadDynamicFields(jenisSuratId) {
                 dynamicFieldsContainer.innerHTML = '<div class="text-muted">Memuat field tambahan...</div>';
 
-                fetch(`{{ url('/admin/field-definitions') }}/${jenisSuratId}`)
+                fetch(`{{ url('/field-definitions') }}/${jenisSuratId}`)
                     .then(response => response.json())
                     .then(data => {
                         dynamicFieldsContainer.innerHTML = ''; // clear loader
