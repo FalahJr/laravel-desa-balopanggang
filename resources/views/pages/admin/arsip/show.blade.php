@@ -23,7 +23,8 @@
                             <div class="page-header-subtitle">Informasi lengkap surat keluar</div>
                         </div>
                         <div class="col-12 col-xl-auto mt-4">
-                            <a class="btn btn-sm btn-light text-primary" href="{{ route('arsip.index') }}">
+                            <a class="btn btn-sm btn-light text-primary"
+                                href="{{ (Session('user')['role'] == 'admin' ? url('/admin/arsip') : Session('user')['role'] == 'kepala desa') ? url('/kepala-desa/arsip') : url('/staff/arsip') }}">
                                 <i class="me-1" data-feather="arrow-left"></i>
                                 Kembali Ke Semua Surat Arsip
                             </a>
@@ -52,9 +53,18 @@
                                 <div>Detail Surat</div>
                                 <div>
 
-                                    <a href="{{ route('arsip.download', $surat->id) }}"
-                                        class="btn btn-sm btn-outline-primary ms-3" target="_blank">
-                                        <i class="fa fa-download mr-3"> </i>&nbsp; Download
+                                    @php
+                                        $role = Session('user')['role'];
+                                        $url = match ($role) {
+                                            'admin' => url('/admin/arsip/' . $surat->id . '/download'),
+                                            'kepala desa' => url('/kepala-desa/arsip/' . $surat->id . '/download'),
+                                            default => url('/staff/arsip/' . $surat->id . '/download'),
+                                        };
+                                    @endphp
+
+                                    <a href="{{ $url }}" class="btn btn-sm btn-outline-primary ms-3"
+                                        target="_blank">
+                                        <i class="fa fa-download mr-3"></i>&nbsp; Download
                                     </a>
                                     @if (Session('user')['role'] == 'kepala desa')
                                         @if ($surat->status == 'Pending')

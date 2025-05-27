@@ -45,6 +45,16 @@ class ArsipController extends Controller
         </a>
                        
                     ';
+                    } else {
+
+                        $prefix = 'staff'; // sesuaikan jika ada custom prefix
+                        return '
+                     <a class="btn btn-info btn-xs" href="' . url($prefix . '/arsip/' . $item->id) . '">
+            <i class="fas fa-eye"></i> &nbsp; Lihat
+        </a>
+                       
+                       
+                    ';
                     }
                 })
                 ->addIndexColumn()

@@ -43,8 +43,9 @@
                                 </div>
                             @endif
 
-                            <form action="{{ route('surat-keluar.update', $surat->id) }}" method="POST"
-                                enctype="multipart/form-data">
+                            <form
+                                action="{{ Session('user')['role'] == 'admin' ? route('surat-keluar.update', $surat->id) : route('surat-keluar.updateStaff', $surat->id) }}"
+                                method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
 
@@ -183,7 +184,7 @@
                 return;
             }
 
-            fetch(`/admin/field-definitions/${jenisSuratId}`)
+            fetch(`/field-definitions/${jenisSuratId}`)
                 .then(response => response.json())
                 .then(fields => {
                     let html = '';

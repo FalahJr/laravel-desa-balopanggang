@@ -23,7 +23,8 @@
                             <div class="page-header-subtitle">Informasi lengkap surat masuk</div>
                         </div>
                         <div class="col-12 col-xl-auto mt-4">
-                            <a class="btn btn-sm btn-light text-primary" href="{{ route('surat-masuk.index') }}">
+                            <a class="btn btn-sm btn-light text-primary"
+                                href="{{ Session('user')['role'] == 'admin' ? url('/admin/surat-masuk') : url('/staff/surat-masuk') }}">
                                 <i class="me-1" data-feather="arrow-left"></i>
                                 Kembali Ke Semua Surat
                             </a>
@@ -51,14 +52,29 @@
                             <div class="d-flex align-items-center justify-content-between w-100">
                                 <div>Detail Surat</div>
                                 <div>
+                                    @php
+                                        $role = Session('user')['role'];
+                                        $url = match ($role) {
+                                            'admin' => url('/admin/surat-masuk/' . $surat->id . '/download'),
+                                            'kepala desa' => url(
+                                                '/kepala-desa/surat-masuk/' . $surat->id . '/download',
+                                            ),
+                                            default => url('/staff/surat-masuk/' . $surat->id . '/download'),
+                                        };
+                                    @endphp
+
+                                    {{-- <a href="{{ $url }}" class="btn btn-sm btn-outline-primary ms-3"
+                                        target="_blank">
+                                        <i class="fa fa-download mr-3"></i>&nbsp; Download
+                                    </a> --}}
                                     @if (Session('user')['role'] == 'kepala desa')
-                                        <a href="{{ route('surat-masuk.download', $surat->id) }}"
-                                            class="btn btn-sm btn-outline-primary ms-3" target="_blank">
+                                        <a href="{{ $url }}" class="btn btn-sm btn-outline-primary ms-3"
+                                            target="_blank">
                                             <i class="fa fa-download mr-3"> </i>&nbsp; Preview PDF
                                         </a>
                                     @else
-                                        <a href="{{ route('surat-masuk.download', $surat->id) }}"
-                                            class="btn btn-sm btn-outline-primary ms-3" target="_blank">
+                                        <a href="{{ $url }}" class="btn btn-sm btn-outline-primary ms-3"
+                                            target="_blank">
                                             <i class="fa fa-download mr-3"> </i>&nbsp; Download
                                         </a>
                                     @endif

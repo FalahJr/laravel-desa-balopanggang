@@ -297,7 +297,12 @@ class SuratKeluarController extends Controller
 
             DB::commit();
 
-            return redirect()->route('surat-keluar.index')->with('success', 'Surat keluar berhasil diperbarui.');
+            // return redirect()->route('surat-keluar.index')->with('success', 'Surat keluar berhasil diperbarui.');
+            if (Session('user')['role'] == 'admin') {
+                return redirect('/admin/surat-keluar')->with('success', 'Surat keluar berhasil diperbarui.');
+            } else {
+                return redirect('/staff/surat-keluar')->with('success', 'Surat keluar berhasil diperbarui.');
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors('Gagal memperbarui data: ' . $e->getMessage())->withInput();
@@ -317,7 +322,12 @@ class SuratKeluarController extends Controller
 
             DB::commit();
 
-            return redirect()->route('surat-keluar.index')->with('success', 'Surat keluar berhasil dihapus.');
+            // return redirect()->route('surat-keluar.index')->with('success', 'Surat keluar berhasil dihapus.');
+            if (Session('user')['role'] == 'admin') {
+                return redirect('/admin/surat-keluar')->with('success', 'Surat keluar berhasil dihapus.');
+            } else {
+                return redirect('/staff/surat-keluar')->with('success', 'Surat keluar berhasil dihapus.');
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors('Gagal menghapus data: ' . $e->getMessage());

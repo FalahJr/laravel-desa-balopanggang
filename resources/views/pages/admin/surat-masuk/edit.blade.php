@@ -184,7 +184,7 @@
                 return;
             }
 
-            fetch(`/admin/field-definitions/${jenisSuratId}`)
+            fetch(`/field-definitions/${jenisSuratId}`)
                 .then(response => response.json())
                 .then(fields => {
                     let html = '';
