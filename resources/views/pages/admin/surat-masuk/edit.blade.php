@@ -90,7 +90,7 @@
                                     @enderror
                                     @if ($surat->file_lampiran)
                                         <small class="text-muted">File saat ini:
-                                            <a href="{{ asset('storage/' . $surat->file_lampiran) }}" target="_blank">Lihat
+                                            <a href="{{ asset('/public/' . $surat->file_lampiran) }}" target="_blank">Lihat
                                                 Lampiran</a>
                                         </small>
                                     @endif

@@ -181,7 +181,9 @@
                             @if ($surat->file_lampiran)
                                 @php
                                     $ext = strtolower(pathinfo($surat->file_lampiran, PATHINFO_EXTENSION));
-                                    $fileUrl = url('public/storage/' . $surat->file_lampiran);
+                                    // $fileUrl = url('public/storage/' . $surat->file_lampiran);
+                                    $fileUrl = asset('/public/' . $surat->file_lampiran);
+
                                 @endphp
 
                                 @if (in_array($ext, ['pdf']))

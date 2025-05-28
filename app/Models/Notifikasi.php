@@ -26,7 +26,7 @@ class Notifikasi extends Model
     /**
      * @var array
      */
-    protected $fillable = ['role', 'judul', 'deskripsi', 'is_seen', 'created_at', 'updated_at'];
+    protected $fillable = ['role', 'surat_id', 'judul', 'deskripsi', 'is_seen', 'created_at', 'updated_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -34,5 +34,10 @@ class Notifikasi extends Model
     public function user()
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function surat()
+    {
+        return $this->belongsTo(Surat::class);
     }
 }

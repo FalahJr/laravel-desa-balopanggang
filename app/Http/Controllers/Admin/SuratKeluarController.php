@@ -8,6 +8,7 @@ use App\Models\Surat;
 use App\Models\FieldDefinition;
 use App\Models\FieldValue;
 use App\Models\JenisSurat;
+use App\Models\Notifikasi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -159,9 +160,19 @@ class SuratKeluarController extends Controller
             $nomorSurat = $request->jenis_surat_id . '/' . $nextIdFormatted . '/' . $tanggalSuratFormatted;
 
             // Cek apakah ada file lampiran baru yang diupload
+            // if ($request->hasFile('file_lampiran')) {
+            //     $filePath = $request->file('file_lampiran')->store('assets/lampiran', 'public');
+            // }
+
+            // Upload file ke public/assets/lampiran
             if ($request->hasFile('file_lampiran')) {
-                $filePath = $request->file('file_lampiran')->store('assets/lampiran', 'public');
+                $file = $request->file('file_lampiran');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $destinationPath = public_path('assets/lampiran');
+                $file->move($destinationPath, $filename);
+                $filePath = 'assets/lampiran/' . $filename; // Simpan path relatif ke file
             }
+
 
             // Simpan surat masuk
             $surat = Surat::create([
@@ -186,6 +197,15 @@ class SuratKeluarController extends Controller
                 }
             }
 
+            // Tambahkan notifikasi untuk Kepala Desa
+            $notifikasi = new Notifikasi;
+            $notifikasi->role = 'kepala desa';
+            $notifikasi->judul = "Terdapat surat keluar baru # '" . $nomorSurat;
+            $notifikasi->deskripsi = "Terdapat surat keluar baru dengan nomor '" . $nomorSurat . "' yang perlu segera diverifikasi.";
+            $notifikasi->is_seen = 'N';
+            $notifikasi->created_at = \Carbon\Carbon::now();
+            $notifikasi->updated_at = \Carbon\Carbon::now();
+            $notifikasi->save();
             DB::commit();
 
             // return redirect()->route('surat-keluar.index')->with('success', 'Surat keluar berhasil disimpan.');
@@ -270,12 +290,28 @@ class SuratKeluarController extends Controller
             $surat->jenis_surat_id = $request->jenis_surat_id;
 
             // Update file lampiran jika ada file baru
+            // if ($request->hasFile('file_lampiran')) {
+            //     if ($surat->file_lampiran && \Storage::disk('public')->exists($surat->file_lampiran)) {
+            //         \Storage::disk('public')->delete($surat->file_lampiran);
+            //     }
+            //     $filePath = $request->file('file_lampiran')->store('assets/lampiran', 'public');
+            //     $surat->file_lampiran = $filePath;
+            // }
+
+            // Upload file baru jika ada
             if ($request->hasFile('file_lampiran')) {
-                if ($surat->file_lampiran && \Storage::disk('public')->exists($surat->file_lampiran)) {
-                    \Storage::disk('public')->delete($surat->file_lampiran);
+                // Hapus file lama jika ada
+                $oldPath = public_path($surat->file_lampiran);
+                if ($surat->file_lampiran && file_exists($oldPath)) {
+                    unlink($oldPath);
                 }
-                $filePath = $request->file('file_lampiran')->store('assets/lampiran', 'public');
-                $surat->file_lampiran = $filePath;
+
+                $file = $request->file('file_lampiran');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $destinationPath = public_path('assets/lampiran');
+                $file->move($destinationPath, $filename);
+
+                $surat->file_lampiran = 'assets/lampiran/' . $filename;
             }
 
             $surat->save();
