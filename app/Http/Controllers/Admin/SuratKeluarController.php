@@ -9,9 +9,12 @@ use App\Models\FieldDefinition;
 use App\Models\FieldValue;
 use App\Models\JenisSurat;
 use App\Models\Notifikasi;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 
 class SuratKeluarController extends Controller
@@ -136,6 +139,11 @@ class SuratKeluarController extends Controller
                 case 'date':
                     $rule[] = 'date';
                     break;
+                case 'file':
+                    $rule[] = 'file';
+                    $rule[] = 'mimes:pdf,jpg,jpeg,png,doc,docx';
+                    $rule[] = 'max:2048';
+                    break;
                     // text & textarea tidak perlu aturan khusus
             }
 
@@ -188,12 +196,34 @@ class SuratKeluarController extends Controller
 
             // Simpan field dinamis jika ada input
             if ($request->filled('field_values')) {
-                foreach ($request->input('field_values') as $fieldId => $value) {
-                    FieldValue::create([
-                        'surat_id'             => $surat->id,
-                        'field_definition_id'  => $fieldId,
-                        'value'                => $value,
-                    ]);
+                if ($request->filled('field_values')) {
+                    foreach ($fieldDefinitions as $field) {
+                        $fieldId = $field->id;
+                        $fieldKey = "field_values.$fieldId";
+
+                        if ($field->tipe_input === 'file' && $request->hasFile("field_values.$fieldId")) {
+                            $uploadedFile = $request->file("field_values.$fieldId");
+
+                            $folderPath = public_path("assets/lampiran/surat-keluar/{$surat->id}");
+                            if (!file_exists($folderPath)) {
+                                mkdir($folderPath, 0777, true);
+                            }
+
+                            $filename = time() . '_' . $uploadedFile->getClientOriginalName();
+                            $uploadedFile->move($folderPath, $filename);
+
+                            $value = "assets/lampiran/surat-keluar/{$surat->id}/" . $filename;
+                        } else {
+                            // selain file, ambil value biasa
+                            $value = $request->input("field_values.$fieldId");
+                        }
+
+                        FieldValue::create([
+                            'surat_id'            => $surat->id,
+                            'field_definition_id' => $fieldId,
+                            'value'               => $value,
+                        ]);
+                    }
                 }
             }
 
@@ -246,23 +276,43 @@ class SuratKeluarController extends Controller
     {
         $surat = Surat::findOrFail($id);
 
-        // Validasi field statis sesuai form input
+        // Validasi field statis
         $request->validate([
             'nomor_surat'       => 'required|string|max:100',
-            'tanggal_surat'      => 'required|date',
-            'nama_surat'     => 'required|string|max:255',
-            'jenis_surat_id' => 'required|exists:jenis_surat,id',
-            'file_lampiran'  => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048',
+            'tanggal_surat'     => 'required|date',
+            'nama_surat'        => 'required|string|max:255',
+            'jenis_surat_id'    => 'required|exists:jenis_surat,id',
+            'file_lampiran'     => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048',
         ]);
 
-        // Ambil field definitions berdasar jenis_surat_id baru
+        // Ambil definisi field dinamis berdasarkan jenis surat baru
         $fieldDefinitions = FieldDefinition::where('jenis_surat_id', $request->jenis_surat_id)->get();
 
         // Validasi dinamis
         $rules = [];
         foreach ($fieldDefinitions as $field) {
-            $rule = $field->is_required === 'Y' ? 'required' : 'nullable';
+            $key = "field_values.{$field->id}";
+            $rule = '';
 
+            // Cek apakah field ini file dan apakah sudah ada file lama-nya
+            $existingValue = FieldValue::where('surat_id', $surat->id)
+                ->where('field_definition_id', $field->id)
+                ->first();
+
+            $hasOldFile = $field->tipe_input === 'file' && $existingValue && !empty($existingValue->value);
+
+            // Atur required hanya jika tidak ada file lama
+            if ($field->is_required === 'Y') {
+                if ($field->tipe_input === 'file') {
+                    $rule = $hasOldFile ? 'nullable' : 'required';
+                } else {
+                    $rule = 'required';
+                }
+            } else {
+                $rule = 'nullable';
+            }
+
+            // Tambahkan validasi sesuai tipe
             switch ($field->tipe_input) {
                 case 'number':
                     $rule .= '|numeric';
@@ -273,9 +323,12 @@ class SuratKeluarController extends Controller
                 case 'date':
                     $rule .= '|date';
                     break;
+                case 'file':
+                    $rule .= '|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048';
+                    break;
             }
 
-            $rules['field_values.' . $field->id] = $rule;
+            $rules[$key] = $rule;
         }
 
         $request->validate($rules);
@@ -283,22 +336,20 @@ class SuratKeluarController extends Controller
         DB::beginTransaction();
 
         try {
-            // Update surat statis
+            // Update data statis
             $surat->nomor_surat = $request->nomor_surat;
             $surat->tanggal_surat = $request->tanggal_surat;
             $surat->nama_surat = $request->nama_surat;
             $surat->jenis_surat_id = $request->jenis_surat_id;
 
-            // Update file lampiran jika ada file baru
-            // if ($request->hasFile('file_lampiran')) {
-            //     if ($surat->file_lampiran && \Storage::disk('public')->exists($surat->file_lampiran)) {
-            //         \Storage::disk('public')->delete($surat->file_lampiran);
-            //     }
-            //     $filePath = $request->file('file_lampiran')->store('assets/lampiran', 'public');
-            //     $surat->file_lampiran = $filePath;
-            // }
+            // Buat folder tujuan file
+            $folder = "assets/lampiran/surat-keluar/{$surat->id}";
+            $destinationPath = public_path($folder);
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
 
-            // Upload file baru jika ada
+            // Update file lampiran utama jika ada
             if ($request->hasFile('file_lampiran')) {
                 // Hapus file lama jika ada
                 $oldPath = public_path($surat->file_lampiran);
@@ -308,10 +359,9 @@ class SuratKeluarController extends Controller
 
                 $file = $request->file('file_lampiran');
                 $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $destinationPath = public_path('assets/lampiran');
                 $file->move($destinationPath, $filename);
 
-                $surat->file_lampiran = 'assets/lampiran/' . $filename;
+                $surat->file_lampiran = "{$folder}/{$filename}";
             }
 
             $surat->save();
@@ -319,12 +369,27 @@ class SuratKeluarController extends Controller
             $inputFieldValues = $request->input('field_values', []);
 
             foreach ($fieldDefinitions as $field) {
-                // Cegah value null, ganti dengan string kosong
                 $value = $inputFieldValues[$field->id] ?? '';
-                if ($value === null) {
-                    $value = '';
+
+                // Jika tipe file, handle upload file
+                if ($field->tipe_input === 'file' && $request->hasFile("field_values.{$field->id}")) {
+                    // Hapus file lama jika ada
+                    $existing = FieldValue::where('surat_id', $surat->id)
+                        ->where('field_definition_id', $field->id)
+                        ->first();
+
+                    if ($existing && $existing->value && file_exists(public_path($existing->value))) {
+                        unlink(public_path($existing->value));
+                    }
+
+                    $uploadedFile = $request->file("field_values.{$field->id}");
+                    $filename = time() . '_' . uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+                    $uploadedFile->move($destinationPath, $filename);
+
+                    $value = "{$folder}/{$filename}";
                 }
 
+                // Simpan/update field value
                 FieldValue::updateOrCreate(
                     ['surat_id' => $surat->id, 'field_definition_id' => $field->id],
                     ['value' => $value]
@@ -333,17 +398,17 @@ class SuratKeluarController extends Controller
 
             DB::commit();
 
-            // return redirect()->route('surat-keluar.index')->with('success', 'Surat keluar berhasil diperbarui.');
-            if (Session('user')['role'] == 'admin') {
-                return redirect('/admin/surat-keluar')->with('success', 'Surat keluar berhasil diperbarui.');
-            } else {
-                return redirect('/staff/surat-keluar')->with('success', 'Surat keluar berhasil diperbarui.');
-            }
+            $redirectPath = Session('user')['role'] === 'admin'
+                ? '/admin/surat-keluar'
+                : '/staff/surat-keluar';
+
+            return redirect($redirectPath)->with('success', 'Surat keluar berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors('Gagal memperbarui data: ' . $e->getMessage())->withInput();
         }
     }
+
 
 
     public function destroy($id)
@@ -353,6 +418,8 @@ class SuratKeluarController extends Controller
         DB::beginTransaction();
 
         try {
+            Notifikasi::where('surat_id', $surat->id)->delete();
+
             FieldValue::where('surat_id', $surat->id)->delete();
             $surat->delete();
 
@@ -389,21 +456,41 @@ class SuratKeluarController extends Controller
     public function download($id)
     {
         $surat = Surat::with(['jenisSurat', 'fieldValues.fieldDefinition'])->findOrFail($id);
-
+        $user = User::where('role', 'kepala desa')->first();
         // Mapping field dinamis dengan label-nya
         $fields = $surat->fieldValues->map(function ($fv) {
             return [
                 'label' => $fv->fieldDefinition->label,
                 'value' => $fv->value,
+                'tipe_input' => $fv->fieldDefinition->tipe_input,
             ];
         });
+
 
         // URL file lampiran jika ada
         $lampiranUrl = $surat->file_lampiran
             ? url('public/storage/' . $surat->file_lampiran)
             : null;
 
-        return view('pages.admin.surat-keluar.download', compact('surat', 'fields', 'lampiranUrl'));
+        // dd($fields);
+        // Kirim data ke view untuk PDF
+        $pdf = Pdf::loadView('pages.admin.surat-masuk.download', [
+            'surat' => $surat,
+            'fields' => $fields,
+            'lampiranUrl' => $lampiranUrl,
+            'user' => $user,
+        ]);
+
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('surat-keterangan-kematian.pdf');
+
+        // return view('pages.admin.surat-masuk.download', compact('surat', 'fields', 'lampiranUrl'));
+
+        // $pdf = PDF::loadView('pages.admin.surat-masuk.download');
+        // $pdf->setPaper('A4', 'portrait');
+
+        // return $pdf->stream('surat-keterangan-kematian.pdf');
     }
 
     public function approve(Request $request, $id)

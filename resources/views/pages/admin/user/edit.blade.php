@@ -91,6 +91,28 @@
                                         @enderror
                                     </div>
                                 </div>
+
+                                <div class="mb-3">
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="signature">Tanda Tangan (gambar)</label>
+                                        <input class="form-control @error('signature') is-invalid @enderror"
+                                            name="signature" type="file" accept="image/*" />
+                                        <small class="form-text text-muted">Unggah file gambar (.png, .jpg, .jpeg)</small>
+                                        @error('signature')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+
+                                        @if ($item->signature)
+                                            <div class="mt-2">
+                                                <strong>Pratinjau Tanda Tangan Saat Ini:</strong><br>
+                                                <img src="{{ asset('storage/' . $item->signature) }}"
+                                                    alt="Signature Preview" style="max-height: 100px;">
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
                                 <!-- Submit button-->
                                 <button class="btn btn-primary" type="submit">
                                     Perbarui Profil

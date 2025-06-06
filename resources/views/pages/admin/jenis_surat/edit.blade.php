@@ -80,13 +80,13 @@
                                         name="add_fields"
                                         {{ old('add_fields', $item->fieldDefinitions->count() > 0) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="addFieldsToggle">
-                                        Ubah Field Dinamis untuk Jenis Surat ini
+                                        Ubah Kolom untuk Jenis Surat ini
                                     </label>
                                 </div>
 
                                 <div id="fieldsContainer"
                                     style="display: {{ old('add_fields', $item->fieldDefinitions->count() > 0) ? 'block' : 'none' }};">
-                                    <label class="small mb-2">Field Definitions</label>
+                                    <label class="small mb-2">Kolom Tambahan</label>
                                     <div id="fieldDefinitionsWrapper">
                                         @php
                                             $fields = old('fields', $item->fieldDefinitions->toArray());
@@ -114,7 +114,7 @@
                                                     <label class="form-label">Tipe Field</label>
                                                     <select name="fields[{{ $index }}][type]" class="form-select"
                                                         required>
-                                                        @foreach (['text', 'number', 'date', 'email', 'textarea'] as $type)
+                                                        @foreach (['text', 'number', 'date', 'email', 'textarea', 'file'] as $type)
                                                             <option value="{{ $type }}"
                                                                 {{ ($field['tipe_input'] ?? $field['type']) == $type ? 'selected' : '' }}>
                                                                 {{ ucfirst($type) }}</option>
@@ -244,6 +244,8 @@
                             <option value="date">Date</option>
                             <option value="email">Email</option>
                             <option value="textarea">Textarea</option>
+                                <option value="file">File</option>
+
                         </select>
                     </div>
                     <div class="mb-2 form-check">

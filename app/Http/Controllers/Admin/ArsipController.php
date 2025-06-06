@@ -8,6 +8,9 @@ use App\Models\Surat;
 use App\Models\FieldDefinition;
 use App\Models\FieldValue;
 use App\Models\JenisSurat;
+use App\Models\Notifikasi;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -303,12 +306,21 @@ class ArsipController extends Controller
         DB::beginTransaction();
 
         try {
+            Notifikasi::where('surat_id', $surat->id)->delete();
+
             FieldValue::where('surat_id', $surat->id)->delete();
             $surat->delete();
 
             DB::commit();
 
-            return redirect()->route('arsip.index')->with('success', 'Surat Arsip berhasil dihapus.');
+            // return redirect()->route('arsip.index')->with('success', 'Surat Arsip berhasil dihapus.');
+            if (Session('user')['role'] == 'admin') {
+                return redirect('/admin/arsip')->with('success', 'Arsip berhasil dihapus.');
+            } elseif (Session('user')['role'] == 'kepala desa') {
+                return redirect('/kepala-desa/arsip')->with('success', 'Arsip berhasil dihapus.');
+            } else {
+                return redirect('/staff/arsip')->with('success', 'Arsip berhasil dihapus.');
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors('Gagal menghapus data: ' . $e->getMessage());
@@ -334,7 +346,7 @@ class ArsipController extends Controller
     public function download($id)
     {
         $surat = Surat::with(['jenisSurat', 'fieldValues.fieldDefinition'])->findOrFail($id);
-
+        $user = User::where('role', 'kepala desa')->first();
         // Mapping field dinamis dengan label-nya
         $fields = $surat->fieldValues->map(function ($fv) {
             return [
@@ -348,7 +360,18 @@ class ArsipController extends Controller
             ? url('public/storage/' . $surat->file_lampiran)
             : null;
 
-        return view('pages.admin.arsip.download', compact('surat', 'fields', 'lampiranUrl'));
+        // dd($fields);
+        // Kirim data ke view untuk PDF
+        $pdf = Pdf::loadView('pages.admin.arsip.download', [
+            'surat' => $surat,
+            'fields' => $fields,
+            'lampiranUrl' => $lampiranUrl,
+            'user' => $user,
+        ]);
+
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('surat-keterangan-kematian.pdf');
     }
 
     public function approve(Request $request, $id)

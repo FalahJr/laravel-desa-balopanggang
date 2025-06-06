@@ -53,7 +53,7 @@ class JenisSuratController extends Controller
             'add_fields' => 'nullable|boolean',
             'fields' => 'nullable|array',
             'fields.*.label' => 'required_with:add_fields|distinct|string|max:255',
-            'fields.*.type' => 'required_with:add_fields|in:text,number,date,email,textarea',
+            'fields.*.type' => 'required_with:add_fields|in:text,number,date,email,textarea,file',
             'fields.*.required' => 'required|string',
             // 'fields.*.order' => 'required_with:add_fields|integer|min:1',
             'fields.*.is_active' => 'nullable|string|in:Y,N',

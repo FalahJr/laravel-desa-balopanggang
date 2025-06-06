@@ -145,6 +145,10 @@
                                     inputHtml =
                                         `<textarea name="field_values[${field.id}]" id="field_${field.id}" class="form-control" ${isRequired}></textarea>`;
                                     break;
+                                case 'file':
+                                    inputHtml =
+                                        `<input type="file" name="field_values[${field.id}]" id="field_${field.id}" class="form-control" ${isRequired}>`;
+                                    break;
                                 default:
                                     // fallback ke text jika tipe tidak dikenali
                                     inputHtml =

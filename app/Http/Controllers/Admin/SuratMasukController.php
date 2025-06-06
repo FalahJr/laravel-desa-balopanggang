@@ -9,9 +9,12 @@ use App\Models\FieldDefinition;
 use App\Models\FieldValue;
 use App\Models\JenisSurat;
 use App\Models\Notifikasi;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 
 class SuratMasukController extends Controller
@@ -200,7 +203,7 @@ class SuratMasukController extends Controller
             // Tambahkan notifikasi untuk Kepala Desa
             $notifikasi = new Notifikasi;
             $notifikasi->role = 'kepala desa';
-            $notifikasi->surat_id = $nextIdFormatted; // Atau set sesuai user yang dituju
+            $notifikasi->surat_id = $nextId; // Atau set sesuai user yang dituju
             $notifikasi->judul = "Terdapat surat masuk baru # '" . $nomorSurat;
             $notifikasi->deskripsi = "Terdapat surat masuk baru dengan nomor '" . $nomorSurat . "' yang perlu segera diverifikasi.";
             $notifikasi->is_seen = 'N';
@@ -354,6 +357,8 @@ class SuratMasukController extends Controller
         DB::beginTransaction();
 
         try {
+            Notifikasi::where('surat_id', $surat->id)->delete();
+
             FieldValue::where('surat_id', $surat->id)->delete();
             $surat->delete();
 
@@ -390,7 +395,7 @@ class SuratMasukController extends Controller
     public function download($id)
     {
         $surat = Surat::with(['jenisSurat', 'fieldValues.fieldDefinition'])->findOrFail($id);
-
+        $user = User::where('role', 'kepala desa')->first();
         // Mapping field dinamis dengan label-nya
         $fields = $surat->fieldValues->map(function ($fv) {
             return [
@@ -404,7 +409,25 @@ class SuratMasukController extends Controller
             ? url('public/storage/' . $surat->file_lampiran)
             : null;
 
-        return view('pages.admin.surat-masuk.download', compact('surat', 'fields', 'lampiranUrl'));
+        // dd($fields);
+        // Kirim data ke view untuk PDF
+        $pdf = Pdf::loadView('pages.admin.surat-masuk.download', [
+            'surat' => $surat,
+            'fields' => $fields,
+            'lampiranUrl' => $lampiranUrl,
+            'user' => $user,
+        ]);
+
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('surat-keterangan-kematian.pdf');
+
+        // return view('pages.admin.surat-masuk.download', compact('surat', 'fields', 'lampiranUrl'));
+
+        // $pdf = PDF::loadView('pages.admin.surat-masuk.download');
+        // $pdf->setPaper('A4', 'portrait');
+
+        // return $pdf->stream('surat-keterangan-kematian.pdf');
     }
 
     public function approve(Request $request, $id)

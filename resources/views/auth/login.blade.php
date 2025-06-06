@@ -10,9 +10,9 @@
                         <div class="card-header text-center">
                             {{-- Logo Unesa dan SIPRAGA --}}
                             <div class="mb-3">
-                                <img src="{{ url('/public/storage/assets/logo-unesa.jpg') }}" alt="Logo Unesa"
+                                <img src="{{ url('/public/assets/logo-unesa.jpg') }}" alt="Logo Unesa"
                                     style="height: 15vh; margin-right: 10px;">
-                                <img src="{{ url('/public/storage/assets/logo-sipraga-gresik.png') }}" alt="Logo SIPRAGA"
+                                <img src="{{ url('/public/assets/logo-sipraga-gresik.png') }}" alt="Logo SIPRAGA"
                                     style="height: 15vh;">
                             </div>
                             <h1 class="fw-light my-4 bold">LOGIN SIPRAGA</h1>

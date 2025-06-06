@@ -262,8 +262,8 @@ Route::prefix('staff')
             // Route::delete('/{id}', [SuratMasukController::class, 'destroy'])->name('destroy');
             Route::get('/{id}', [SuratMasukController::class, 'show'])->name('show'); // <- Tambahkan ini
             Route::get('/{id}/download', [SuratMasukController::class, 'download'])->name('download');
-            Route::get('/{id}/approve', [SuratMasukController::class, 'approve'])->name('approve');
-            Route::get('/{id}/reject', [SuratMasukController::class, 'reject'])->name('reject');
+            // Route::get('/{id}/approve', [SuratMasukController::class, 'approve'])->name('approve');
+            // Route::get('/{id}/reject', [SuratMasukController::class, 'reject'])->name('reject');
         });
 
         Route::prefix('surat-keluar')->name('surat-keluar.')->group(function () {
@@ -275,8 +275,8 @@ Route::prefix('staff')
             // Route::delete('/{id}', [SuratKeluarController::class, 'destroy'])->name('destroy');
             Route::get('/{id}', [SuratKeluarController::class, 'show'])->name('show'); // <- Tambahkan ini
             Route::get('/{id}/download', [SuratKeluarController::class, 'download'])->name('download');
-            Route::get('/{id}/approve', [SuratKeluarController::class, 'approve'])->name('approve');
-            Route::get('/{id}/reject', [SuratKeluarController::class, 'reject'])->name('reject');
+            // Route::get('/{id}/approve', [SuratKeluarController::class, 'approve'])->name('approve');
+            // Route::get('/{id}/reject', [SuratKeluarController::class, 'reject'])->name('reject');
         });
 
         Route::prefix('arsip')->name('arsip.')->group(function () {

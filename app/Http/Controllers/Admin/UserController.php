@@ -108,21 +108,62 @@ class UserController extends Controller
         ]);
     }
 
+
+
     public function update(Request $request, $id)
     {
+        /** ----------------------------------------------------------------
+         * 1. VALIDASI
+         * ----------------------------------------------------------------*/
         $validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|email:dns',
+            'name'      => 'required|max:255',
+            'email'     => 'required|email:dns|unique:users,email,' . $id,
+            'password'  => 'nullable|min:6',
+            'signature' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $item = User::findOrFail($id);
+        /** ----------------------------------------------------------------
+         * 2. TEMUKAN USER
+         * ----------------------------------------------------------------*/
+        $user = User::findOrFail($id);
 
-        $item->update($validatedData);
+        /** ----------------------------------------------------------------
+         * 3. HANDLE PASSWORD (jika diisi)
+         * ----------------------------------------------------------------*/
+        if ($request->filled('password')) {
+            $validatedData['password'] = Hash::make($request->password);
+        } else {
+            unset($validatedData['password']); // Jangan sentuh kolom password
+        }
+
+        /** ----------------------------------------------------------------
+         * 4. HANDLE FILE SIGNATURE (jika ada)
+         * ----------------------------------------------------------------*/
+        if ($request->hasFile('signature')) {
+            if ($user->signature && file_exists(public_path($user->signature))) {
+                @unlink(public_path($user->signature));
+            }
+
+            $file           = $request->file('signature');
+            $filename       = time() . '_' . $file->getClientOriginalName();
+            $destinationDir = public_path('assets/signatures');
+            if (!is_dir($destinationDir)) {
+                mkdir($destinationDir, 0755, true);
+            }
+            $file->move($destinationDir, $filename);
+            $validatedData['signature'] = 'assets/signatures/' . $filename;
+        }
+
+        /** ----------------------------------------------------------------
+         * 5. UPDATE DATA
+         * ----------------------------------------------------------------*/
+        $user->update($validatedData);
 
         return redirect()
             ->route('user.index')
-            ->with('success', 'Sukses! Data Pengguna telah diperbarui');
+            ->with('success', 'Sukses! Data pengguna telah diperbarui.');
     }
+
 
     public function destroy($id)
     {

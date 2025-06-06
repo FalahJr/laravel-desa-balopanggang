@@ -73,12 +73,12 @@
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="checkbox" value="1" id="addFieldsToggle"
                                         name="add_fields" {{ old('add_fields') ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="addFieldsToggle">Tambah Field Dinamis untuk Jenis
+                                    <label class="form-check-label" for="addFieldsToggle">Tambah Kolom untuk Jenis
                                         Surat ini</label>
                                 </div>
 
                                 <div id="fieldsContainer" style="display: {{ old('add_fields') ? 'block' : 'none' }};">
-                                    <label class="small mb-2">Field Definitions</label>
+                                    <label class="small mb-2">Kolom Tambahan</label>
                                     <div id="fieldDefinitionsWrapper">
                                         @if (old('fields'))
                                             @foreach (old('fields') as $index => $field)
@@ -111,6 +111,9 @@
                                                             <option value="textarea"
                                                                 {{ isset($field['type']) && $field['type'] == 'textarea' ? 'selected' : '' }}>
                                                                 Textarea</option>
+                                                            <option value="file"
+                                                                {{ isset($field['type']) && $field['type'] == 'file' ? 'selected' : '' }}>
+                                                                File Upload</option>
                                                         </select>
                                                     </div>
                                                     <div class="mb-2 form-check">
@@ -153,6 +156,8 @@
                                                         <option value="date">Date</option>
                                                         <option value="email">Email</option>
                                                         <option value="textarea">Textarea</option>
+                                                        <option value="file">File Upload</option>
+
                                                     </select>
                                                 </div>
                                                 <div class="mb-2 form-check">
@@ -232,6 +237,8 @@
                                     <option value="date">Date</option>
                                     <option value="email">Email</option>
                                     <option value="textarea">Textarea</option>
+                                  <option value="file">File Upload</option>
+
                                 </select>
                             </div>
                             <div class="mb-2 form-check">

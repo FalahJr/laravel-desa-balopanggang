@@ -184,7 +184,7 @@
                 return;
             }
 
-            fetch(`/field-definitions/${jenisSuratId}`)
+            fetch(`{{ url('/field-definitions') }}/${jenisSuratId}`)
                 .then(response => response.json())
                 .then(fields => {
                     let html = '';
