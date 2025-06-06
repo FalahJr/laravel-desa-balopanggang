@@ -46,7 +46,15 @@
                                 method="POST" enctype="multipart/form-data">
                                 @csrf
 
-                                {{-- Nomor Surat DIHAPUS --}}
+                                <div class="mb-3">
+                                    <label for="nomor_surat" class="small mb-1">Nomor Surat</label>
+                                    <input type="text" name="nomor_surat" id="nomor_surat"
+                                        class="form-control @error('nomor_surat') is-invalid @enderror"
+                                        value="{{ old('nomor_surat') }}" required>
+                                    @error('nomor_surat')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
 
                                 <div class="mb-3">
                                     <label for="tgl_surat" class="small mb-1">Tanggal Surat</label>
@@ -144,6 +152,10 @@
                                 case 'textarea':
                                     inputHtml =
                                         `<textarea name="field_values[${field.id}]" id="field_${field.id}" class="form-control" ${isRequired}></textarea>`;
+                                    break;
+                                case 'file':
+                                    inputHtml =
+                                        `<input type="file" name="field_values[${field.id}]" id="field_${field.id}" class="form-control" ${isRequired}>`;
                                     break;
                                 default:
                                     // fallback ke text jika tipe tidak dikenali

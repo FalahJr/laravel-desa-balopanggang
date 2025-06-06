@@ -146,6 +146,11 @@
                                             <th>{{ $value->fieldDefinition->label }}</th>
                                             <td>
                                                 @php
+                                                    $tipeInput = $value->fieldDefinition->tipe_input;
+                                                    $isFile = $tipeInput === 'file';
+                                                    $fileUrl = $isFile ? asset('/public/' . $value->value) : null;
+
+                                                    // Cek apakah value kemungkinan adalah tanggal
                                                     try {
                                                         $parsedDate = \Carbon\Carbon::createFromFormat(
                                                             'Y-m-d',
@@ -159,7 +164,12 @@
                                                     }
                                                 @endphp
 
-                                                @if ($isDate)
+                                                @if ($isFile)
+                                                    <a href="{{ $fileUrl }}" target="_blank"
+                                                        class="btn btn-sm btn-outline-primary">
+                                                        Lihat File {{ $value->fieldDefinition->label }}
+                                                    </a>
+                                                @elseif ($isDate)
                                                     {{ $parsedDate->translatedFormat('d F Y') }}
                                                 @else
                                                     {{ $value->value }}

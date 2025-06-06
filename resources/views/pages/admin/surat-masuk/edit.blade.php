@@ -156,6 +156,22 @@
                                                     class="form-control @error("field_values.{$field->id}") is-invalid @enderror"
                                                     value="{{ $value }}"
                                                     {{ $field->is_required === 'Y' ? 'required' : '' }}>
+                                            @elseif ($field->tipe_input === 'file')
+                                                @php
+                                                    $isFileRequired = $field->is_required === 'Y' && empty($value);
+                                                @endphp
+                                                <input type="file" name="field_values[{{ $field->id }}]"
+                                                    id="field_{{ $field->id }}"
+                                                    class="form-control @error("field_values.{$field->id}") is-invalid @enderror"
+                                                    {{ $isFileRequired ? 'required' : '' }}>
+
+                                                @if (!empty($value))
+                                                    <small class="text-muted">
+                                                        File saat ini:
+                                                        <a href="{{ asset('/public/' . $value) }}" target="_blank">Lihat
+                                                            Lampiran</a>
+                                                    </small>
+                                                @endif
                                             @endif
 
                                             @error("field_values.{$field->id}")
@@ -214,6 +230,10 @@
                             case 'email':
                                 inputHtml =
                                     `<input type="email" name="field_values[${field.id}]" id="field_${field.id}" class="form-control" ${required}>`;
+                                break;
+                            case 'file':
+                                inputHtml =
+                                    `<input type="file" name="field_values[${field.id}]" id="field_${field.id}" class="form-control" ${required}>`;
                                 break;
                             default:
                                 inputHtml =

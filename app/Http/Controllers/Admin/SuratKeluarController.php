@@ -107,6 +107,7 @@ class SuratKeluarController extends Controller
     {
         // Validasi statis dulu
         $request->validate([
+            'nomor_surat'    => 'required|string|max:100',
             'tgl_surat'      => 'required|date',
             'nama_surat'     => 'required|string|max:255',
             'file_lampiran'  => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048',
@@ -184,7 +185,8 @@ class SuratKeluarController extends Controller
 
             // Simpan surat masuk
             $surat = Surat::create([
-                'nomor_surat'       => $nomorSurat,
+                // 'nomor_surat'       => $nomorSurat,
+                'nomor_surat'       => $request->nomor_surat,
                 'tanggal_surat'     => $request->tgl_surat,
                 'nama_surat'        => $request->nama_surat,
                 'file_lampiran'     => $filePath, // bisa null jika tidak ada upload
@@ -474,7 +476,7 @@ class SuratKeluarController extends Controller
 
         // dd($fields);
         // Kirim data ke view untuk PDF
-        $pdf = Pdf::loadView('pages.admin.surat-masuk.download', [
+        $pdf = Pdf::loadView('pages.admin.surat-keluar.download', [
             'surat' => $surat,
             'fields' => $fields,
             'lampiranUrl' => $lampiranUrl,

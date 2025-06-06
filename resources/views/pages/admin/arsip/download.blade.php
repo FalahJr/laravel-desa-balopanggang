@@ -110,31 +110,27 @@
                         <td style="">
                             @php
                                 $value = $field['value'];
+                                $tipe = $field['tipe_input'];
                                 $formattedValue = $value;
 
-                                try {
-                                    // Cek apakah nilai bisa di-parse jadi tanggal dan valid
-                                    // $parsedDate = \Carbon\Carbon::parse($value);
-
-                                    // // Tampilkan hanya jika string aslinya memang tanggal, misal "2025-05-29" atau lainnya
-                                    // if ($parsedDate && ($parsedDate->format('Y-m-d') === $value || strtotime($value))) {
-                                    //     $formattedValue = $parsedDate->locale('id')->translatedFormat('d F Y');
-                                    // }
-
-                                    $parsedDate = \Carbon\Carbon::createFromFormat('Y-m-d', $formattedValue);
-                                    $isDate = $parsedDate && $parsedDate->format('Y-m-d') === $formattedValue;
-                                } catch (\Exception $e) {
-                                    $isDate = false;
-
-                                    // Abaikan jika bukan tanggal
+                                $isDate = false;
+                                if ($tipe === 'date') {
+                                    try {
+                                        $parsedDate = \Carbon\Carbon::createFromFormat('Y-m-d', $formattedValue);
+                                        $isDate = $parsedDate && $parsedDate->format('Y-m-d') === $formattedValue;
+                                    } catch (\Exception $e) {
+                                        $isDate = false;
+                                    }
                                 }
                             @endphp
-                            @if ($isDate)
+
+                            @if ($tipe === 'file')
+                                <i> Sudah Diupload </i>
+                            @elseif ($isDate)
                                 {{ $parsedDate->translatedFormat('d F Y') }}
                             @else
                                 {{ $formattedValue }}
                             @endif
-                            {{-- {{ $formattedValue ?? '.....................................................' }} --}}
                         </td>
 
                     </tr>

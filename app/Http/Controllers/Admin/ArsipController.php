@@ -352,6 +352,7 @@ class ArsipController extends Controller
             return [
                 'label' => $fv->fieldDefinition->label,
                 'value' => $fv->value,
+                'tipe_input' => $fv->fieldDefinition->tipe_input,
             ];
         });
 

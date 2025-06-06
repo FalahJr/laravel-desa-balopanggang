@@ -232,6 +232,10 @@
                                 inputHtml =
                                     `<input type="email" name="field_values[${field.id}]" id="field_${field.id}" class="form-control" ${required}>`;
                                 break;
+                            case 'file':
+                                inputHtml =
+                                    `<input type="file" name="field_values[${field.id}]" id="field_${field.id}" class="form-control" ${required}>`;
+                                break;
                             default:
                                 inputHtml =
                                     `<input type="text" name="field_values[${field.id}]" id="field_${field.id}" class="form-control" ${required}>`;
